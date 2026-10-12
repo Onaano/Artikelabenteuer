@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Artikel-Abenteuer – Der, die, das und ein, eine: ein Lernspiel für die Grundschule von Förderfreude.">
+<title>Artikel-Abenteuer – Der, die, das • ein &amp; eine</title>
+<style>
+:root{
+  --cream:#fbf3e4; --paper:#fffaf0; --ink:#3a3226; --ink2:#5b4f3d; --line:#d9c9a8;
+  --terra:#d97e55; --terraD:#b45e39; --sage:#8fa888; --sageD:#5d7a57; --petrol:#8fb9c9; --petrolD:#3f6f84;
+  --mustard:#eec14a; --mustardD:#b8892a; --rose:#d98a92; --roseD:#a95560; --focus:#1f5f7a;
+  --radius:18px;
+  --pic:min(46dvh,40vw,360px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html,body{margin:0;padding:0}
+body{background-color:var(--cream);background-image:radial-gradient(circle at 12% 8%,#fff7e6 0,transparent 45%),radial-gradient(circle at 88% 92%,#f6e8cc 0,transparent 50%);background-attachment:fixed;color:var(--ink);font-family:"Trebuchet MS","Segoe UI","Nunito",system-ui,-apple-system,Roboto,sans-serif;font-size:18px;line-height:1.3;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+button:focus-visible,a:focus-visible{outline:4px solid var(--focus);outline-offset:3px;box-shadow:0 0 0 7px #fff}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.screen{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;max-width:1280px;margin:0 auto;width:100%}
+svg{display:block}
+
+/* ---------- Skins: neutrale Farbvarianten, NIE an einen Artikel gebunden ---------- */
+.sk0{--bg:#f6d9c9;--bd:#b45e39}
+.sk1{--bg:#dbe7d6;--bd:#5d7a57}
+.sk2{--bg:#d4e7ee;--bd:#3f6f84}
+.sk3{--bg:#f6e6b0;--bd:#a07a1f}
+.sk4{--bg:#f1d3d6;--bd:#a95560}
+
+/* ---------- Startseite ---------- */
+.top{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px 4px}
+.banner{position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:.9}
+.banner svg{width:100%;height:100%}
+.title-block{position:relative;z-index:1}
+h1{margin:0;font-size:clamp(1.5rem,4.6vw + .4rem,2.8rem);letter-spacing:.04em;line-height:1.05;color:var(--terraD);text-shadow:0 2px 0 #fff}
+.sub{margin:2px 0 0;font-size:clamp(1rem,2vw + .5rem,1.5rem);font-weight:700;color:var(--ink2)}
+.lead{margin:6px 16px 8px;font-size:clamp(1rem,1.6vw + .5rem,1.4rem);font-weight:700}
+.icon-btn{position:relative;z-index:1;width:52px;height:52px;border-radius:50%;border:3px solid var(--terraD);background:var(--paper);display:grid;place-items:center;flex:none;padding:0;color:var(--terraD)}
+.icon-btn svg{width:28px;height:28px}
+.icon-btn[aria-pressed="false"]{background:#efe6d3;color:#7b6f5b;border-color:#9a8d76}
+.icon-btn .slash{display:none}
+.icon-btn[aria-pressed="false"] .slash{display:block}
+.mode-grid{display:grid;gap:clamp(8px,1.4vw,16px);padding:4px 16px 20px;grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (min-width:640px){.mode-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.mode-card{position:relative;display:flex;align-items:center;gap:12px;text-align:left;padding:10px 12px;min-height:96px;border:3px solid var(--bd);border-radius:var(--radius);background:var(--bg);box-shadow:0 4px 0 rgba(90,70,40,.18)}
+.mode-card:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(90,70,40,.18)}
+.mc-art{width:clamp(56px,9vw,92px);height:clamp(56px,9vw,92px);flex:none;background:rgba(255,255,255,.65);border-radius:14px;padding:4px}
+.mc-art svg{width:100%;height:100%}
+.mc-txt{min-width:0}
+.mc-title{display:block;font-weight:800;font-size:clamp(1.02rem,1.2vw + .75rem,1.45rem);line-height:1.12}
+.mc-place{display:block;margin-top:3px;font-size:clamp(.85rem,.6vw + .65rem,1.05rem);color:var(--ink2)}
+@media (max-width:639px){.mode-card{flex-direction:column;text-align:center;justify-content:center;padding:10px 8px}}
+@media (max-height:620px) and (min-width:760px){
+  .top{padding-top:8px}.lead{margin:2px 16px 4px}.mode-card{min-height:84px}.mode-grid{padding-bottom:10px}
+}
+
+.start-foot{margin-top:auto;flex:1 1 0;min-height:0;max-height:140px;pointer-events:none;overflow:hidden}
+.start-foot svg{width:100%;height:100%}
+@media (max-height:480px){.start-foot{display:none}}
+/* ---------- Auswahl (Stufe) ---------- */
+.sub-wrap{flex:1;display:flex;flex-direction:column;justify-content:center;padding:12px 16px 24px;gap:12px}
+.sub-head{display:flex;align-items:center;gap:12px}
+.btn-small{min-height:48px;padding:6px 16px;border-radius:999px;border:3px solid var(--terraD);background:var(--paper);font-weight:800;font-size:1rem;color:var(--ink)}
+.sub-title{margin:0;font-size:clamp(1.3rem,2.6vw + .6rem,2.2rem);color:var(--terraD)}
+.sub-hint{margin:0;font-size:clamp(1rem,1.4vw + .5rem,1.3rem);font-weight:700}
+.level-grid{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:700px){.level-grid{grid-template-columns:repeat(3,1fr)}}
+.level-card{display:flex;align-items:center;gap:14px;min-height:92px;padding:12px 16px;border-radius:var(--radius);border:3px solid var(--bd);background:var(--bg);text-align:left;box-shadow:0 4px 0 rgba(90,70,40,.18)}
+.level-card:active{transform:translateY(2px)}
+.lv-icons{display:flex;gap:4px;flex:none}
+.lv-icons svg{width:30px;height:30px}
+.lv-name{font-weight:800;font-size:1.5rem;display:block}
+.lv-desc{display:block;font-size:1rem;color:var(--ink2)}
+@media (min-width:700px){.level-card{flex-direction:column;justify-content:center;text-align:center;min-height:150px}}
+
+/* ---------- Spielbildschirm ---------- */
+#screen-game{height:100vh;height:100dvh;max-height:none}
+.gbar{display:flex;align-items:center;gap:10px;padding:5px 12px 2px;min-height:50px}
+.gbar .btn-small{min-height:44px;padding:4px 14px;font-size:.95rem}
+.g-title{flex:1;min-width:0;text-align:center;font-weight:800;font-size:clamp(.95rem,1.2vw + .6rem,1.35rem);line-height:1.1}
+.g-title small{display:block;font-weight:700;color:var(--ink2);font-size:.78em}
+.gbar .icon-btn{width:46px;height:46px}
+.mapstrip{position:relative;height:clamp(46px,9dvh,78px);margin:2px 12px 0;border-radius:14px;background:linear-gradient(#f6ead0,#efdfbc);border:2px solid var(--line);overflow:hidden;flex:none}
+.mapstrip>svg{position:absolute;inset:0}
+.mk{transition:transform .7s ease-in-out}
+.stage{flex:1;min-height:0;display:grid;gap:10px;padding:8px 12px 10px;grid-template-columns:minmax(0,1fr);grid-auto-rows:auto;align-content:start;overflow-y:auto;overflow-x:hidden}
+@media (min-aspect-ratio:11/10){
+  .stage{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr);align-content:stretch}
+}
+.pane{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-width:0}
+@media (min-aspect-ratio:11/10){.pane{min-height:0}}
+.picbox{position:relative;width:var(--pic);height:var(--pic);background:var(--paper);border:3px solid var(--line);border-radius:22px;box-shadow:0 5px 0 rgba(90,70,40,.14);padding:10px;display:grid;place-items:center}
+@media (max-aspect-ratio:10999/10000){:root{--pic:min(26dvh,56vw,300px)}}
+.picbox .art{width:100%;height:100%}
+.picbox.blank{background:repeating-linear-gradient(45deg,#f3e8d0 0 12px,#fbf3e4 12px 24px)}
+.picbox .q{position:absolute;inset:0;display:grid;place-items:center;font-size:calc(var(--pic)*.5);font-weight:800;color:#c5b793}
+.picrow{display:flex;align-items:center;gap:12px}
+.spk{width:56px;height:56px;border-radius:50%;border:3px solid var(--petrolD);background:#e3f0f5;display:grid;place-items:center;padding:0;color:var(--petrolD);flex:none}
+.spk svg{width:30px;height:30px}
+.wordtag{font-weight:800;font-size:clamp(1.4rem,3.2dvh + .6rem,2.4rem);letter-spacing:.01em;min-height:1.2em}
+.prompt{margin:0;font-weight:800;text-align:center;font-size:clamp(1.05rem,2.4dvh + .55rem,1.6rem)}
+.opts{display:grid;gap:clamp(8px,1.6vw,14px);width:100%;max-width:560px}
+.opts.n3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.opts.n2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.opt{min-height:clamp(56px,10dvh,92px);border-radius:var(--radius);border:4px solid var(--bd);background:var(--bg);font-weight:800;font-size:clamp(1.5rem,4.4dvh + .5rem,2.5rem);letter-spacing:.03em;text-transform:uppercase;box-shadow:0 5px 0 rgba(90,70,40,.2);padding:4px 6px}
+.opt:active{transform:translateY(2px);box-shadow:0 3px 0 rgba(90,70,40,.2)}
+.opt.good{background:#cfe6c8;border-color:#3f7a3a;box-shadow:0 0 0 5px rgba(63,122,58,.25)}
+.opt.dim,.pcard.dim,.mcard.dim,.tile.dim{opacity:.45}
+.opt[disabled]{cursor:default}
+.shake{animation:shake .4s}
+@keyframes shake{20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.fb{min-height:2.6em;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:700;font-size:clamp(1rem,2dvh + .5rem,1.35rem);padding:2px 8px;border-radius:12px;max-width:560px}
+.fb.show{background:#f3e8d0}
+.fb.good{background:#dcecd5;color:#2e5a2a}
+.combo{display:flex;flex-direction:column;align-items:center;gap:0;font-weight:800;font-size:clamp(1.4rem,4dvh + .4rem,2.8rem);letter-spacing:.03em;text-transform:uppercase;min-height:1.2em;line-height:1.1}
+.combo .ln{display:flex;align-items:center;gap:10px}
+.combo .arr{font-size:.7em;color:var(--terraD);line-height:1}
+.combo.pop{animation:pop .45s}
+@keyframes pop{0%{transform:scale(.7);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.nextbtn{min-height:52px;padding:6px 28px;border-radius:999px;border:4px solid var(--sageD);background:#dbe7d6;font-weight:800;font-size:1.25rem;box-shadow:0 4px 0 rgba(90,70,40,.2)}
+.sentence{font-weight:800;text-align:center;font-size:clamp(1.35rem,4dvh + .6rem,2.3rem);line-height:1.35}
+.gap{display:inline-block;min-width:3.1em;border-bottom:5px solid var(--terraD);margin:0 .1em;text-align:center;color:var(--terraD)}
+.gap.filled{border-bottom-color:#3f7a3a;color:#2e5a2a}
+.defcard{background:var(--paper);border:3px solid var(--line);border-radius:22px;padding:10px 16px;box-shadow:0 5px 0 rgba(90,70,40,.14);display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:800;font-size:clamp(1.3rem,4dvh + .4rem,2.8rem);text-transform:uppercase;width:min(100%,var(--pic));text-align:center}
+.defcard .arr{font-size:.65em;color:var(--terraD);line-height:1}
+.defcard .blank{border-bottom:5px solid var(--terraD);display:inline-block;min-width:2.4em}
+
+/* Blöcke für Rucksack & Brücke */
+.blk{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-width:0}
+@media (min-aspect-ratio:11/10){.blk{min-height:0}}
+.stage.k-pack{grid-template-areas:"tray" "bags" "foot"}
+.stage.k-match{grid-template-areas:"head" "cols" "foot"}
+.a-tray{grid-area:tray}.a-bags{grid-area:bags}.a-head{grid-area:head}.a-cols{grid-area:cols}.a-foot{grid-area:foot}
+@media (min-aspect-ratio:11/10){
+  .stage.k-pack{grid-template-rows:minmax(0,1fr) auto;grid-template-areas:"tray bags" "foot bags"}
+  .stage.k-match{grid-template-rows:minmax(0,1fr) auto;grid-template-areas:"head cols" "foot cols"}
+}
+.stage.solved .prompt{display:none}
+.stage.solved.k-pack .a-tray{display:none}
+/* Rucksack packen */
+.tray{display:grid;gap:clamp(8px,1.6dvh,16px);width:100%;justify-content:center;grid-template-columns:repeat(3,minmax(0,var(--cw)))}
+.pane-pack{--cw:clamp(86px,28vw,170px);--ca:clamp(40px,13dvh,112px)}
+.pcard{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px 4px;border-radius:16px;border:3px solid var(--line);background:var(--paper);box-shadow:0 4px 0 rgba(90,70,40,.14);touch-action:none;user-select:none;-webkit-user-select:none}
+.pcard .art{width:var(--ca);height:var(--ca)}
+.pcard .w{font-weight:800;font-size:clamp(.85rem,1.9dvh + .3rem,1.2rem);min-height:1.15em}
+.pcard.sel{border-color:var(--focus);background:#e7f3f8;box-shadow:0 0 0 5px rgba(31,95,122,.3)}
+.pcard.drag-src{opacity:.35}
+.ghost{position:fixed;z-index:50;pointer-events:none;opacity:.92;transform:rotate(-3deg) scale(1.05);box-shadow:0 10px 22px rgba(0,0,0,.28)}
+.bags{display:grid;gap:8px;width:100%;max-width:560px;grid-template-columns:1fr}
+@media (max-aspect-ratio:10999/10000){.bags{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.bag{position:relative;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:8px;min-height:clamp(56px,15dvh,130px);padding:6px 10px 6px 10px;border-radius:22px 22px 14px 14px;border:4px solid var(--bd);background:var(--bg);text-align:left;box-shadow:0 5px 0 rgba(90,70,40,.2)}
+.bag::before{content:"";position:absolute;left:14px;right:14px;top:-10px;height:14px;border-radius:12px 12px 0 0;border:4px solid var(--bd);border-bottom:0;background:var(--bg)}
+.bag.over{outline:5px dashed var(--focus);outline-offset:3px}
+.bag-lab{background:var(--paper);border:3px solid var(--bd);border-radius:12px;padding:4px 10px;font-weight:800;font-size:clamp(1.3rem,3.6dvh + .4rem,2.1rem);letter-spacing:.03em;text-transform:uppercase}
+.bag-in{display:flex;flex-wrap:wrap;gap:4px;align-content:center;min-height:40px}
+.mini{display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.85);border-radius:10px;padding:2px 4px;font-weight:800;font-size:clamp(.82rem,1.6dvh + .3rem,1.05rem);text-transform:uppercase;line-height:1.05}
+.mini svg{width:clamp(28px,6dvh,50px);height:clamp(28px,6dvh,50px)}
+@media (max-aspect-ratio:10999/10000){
+  .bag{grid-template-columns:1fr;justify-items:center;text-align:center;min-height:clamp(86px,18dvh,150px);align-content:start}
+  .bag-in{justify-content:center}
+}
+
+/* Zusammenpassen: Brücke */
+.bridge{display:flex;justify-content:center;gap:4px;margin:2px auto 0;padding:4px 10px;border-radius:12px;background:linear-gradient(#e3f0f5,#d4e7ee);border:2px solid var(--petrol)}
+.plank{width:clamp(30px,6vw,56px);height:clamp(16px,3dvh,24px);border-radius:5px;border:3px dashed #b9a98a;background:transparent}
+.plank.on{border:3px solid #7a5a3a;background:#c99a6c}
+.mcols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);gap:10px;width:100%;max-width:560px;align-items:center}
+.mcol{display:flex;flex-direction:column;gap:clamp(5px,1.1dvh,10px)}
+.mcard{display:flex;align-items:center;gap:8px;min-height:clamp(48px,9.4dvh,84px);padding:3px 8px;border-radius:14px;border:3px solid var(--line);background:var(--paper);box-shadow:0 3px 0 rgba(90,70,40,.14);text-align:left}
+.mcard .art{width:clamp(38px,8dvh,72px);height:clamp(38px,8dvh,72px);flex:none}
+.mcard .w{font-weight:800;font-size:clamp(1rem,2.4dvh + .35rem,1.6rem);min-width:0;overflow-wrap:anywhere}
+.mcard.sel{border-color:var(--focus);background:#e7f3f8;box-shadow:0 0 0 5px rgba(31,95,122,.3)}
+.mcard.done{border-color:#3f7a3a;background:#dcecd5}
+.mcard .ph{font-weight:800;text-transform:uppercase;font-size:clamp(1rem,2.4dvh + .35rem,1.6rem)}
+.tile{min-height:clamp(48px,9.4dvh,84px);border-radius:14px;border:4px solid var(--bd);background:var(--bg);font-weight:800;font-size:clamp(1.3rem,3.4dvh + .4rem,2.2rem);text-transform:uppercase;box-shadow:0 4px 0 rgba(90,70,40,.2)}
+.tile.used{opacity:.4;border-style:dashed;box-shadow:none}
+
+/* Kulisse */
+.scenery{position:absolute;left:0;right:0;bottom:0;height:clamp(46px,13dvh,120px);pointer-events:none;z-index:0;overflow:hidden}
+.scenery svg{position:absolute;bottom:0;width:100%;height:100%}
+#screen-game{position:relative}
+#screen-game>*:not(.scenery):not(.sr){position:relative;z-index:1}
+@media (max-height:520px){.scenery{display:none}}
+/* Ende */
+.end-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px 16px 20px;text-align:center}
+#end-art{width:min(92vw,520px)}
+#end-art svg{width:100%;height:auto;max-height:44dvh}
+.end-title{margin:0;font-size:clamp(1.7rem,4.5vw + .6rem,3rem);color:var(--terraD)}
+.end-sub{margin:0;font-weight:700;font-size:clamp(1rem,1.6vw + .5rem,1.4rem)}
+.end-btns{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.end-btns .nextbtn{min-width:210px}
+.end-btns .btn2{border-color:var(--terraD);background:var(--paper)}
+.sparkle{animation:tw 1.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.sparkle:nth-child(2n){animation-delay:.6s}.sparkle:nth-child(3n){animation-delay:1.1s}
+@keyframes tw{0%,100%{transform:scale(.7);opacity:.6}50%{transform:scale(1.15);opacity:1}}
+.hop{animation:hop 1.4s ease-in-out infinite;transform-box:fill-box;transform-origin:bottom center}
+@keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-8px)}}
+
+/* kurze Bildschirme */
+@media (max-height:480px){
+  .top{padding:6px 16px 0}h1{font-size:1.5rem}.sub{font-size:1rem}.lead{margin:2px 16px 4px;font-size:1rem}
+  .mode-card{min-height:76px;padding:6px 10px}.mc-art{width:54px;height:54px}.mode-grid{padding-bottom:10px;gap:8px}
+  .combo{font-size:clamp(1.3rem,3.4dvh + .3rem,2rem)}.sentence{font-size:1.3rem}
+  .gbar{min-height:46px;padding-top:2px;padding-bottom:0}.g-title small{display:none}
+  .spk{width:48px;height:48px}.opt{min-height:50px}.nextbtn{min-height:44px;font-size:1.1rem}
+  .fb{min-height:1.7em}.stage{padding:4px 12px 6px;gap:6px}.mapstrip{height:40px}
+  .a-tray .prompt{display:none}.blk{gap:5px}.mini{font-size:.74rem}.mini svg{width:26px;height:26px}.bag{padding:4px 8px}
+  .nextbtn{padding:4px 22px}
+}
+@media (max-aspect-ratio:10999/10000){ .stage.k-sent{--pic:min(19dvh,42vw,230px)} .stage.k-sent .combo{font-size:clamp(1.3rem,3.2dvh + .4rem,2.2rem)} }
+@media (max-aspect-ratio:10999/10000) and (max-height:700px){ .stage.k-sent{--pic:min(15dvh,36vw,170px)} .stage.k-sent .sentence{font-size:clamp(1.2rem,3.2dvh + .3rem,1.7rem)} .stage.k-sent .prompt{font-size:1rem} .stage.k-missing.solved .combo{display:none} }
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+<div id="app">
+<section id="screen-start" class="screen" aria-labelledby="h1">
+  <header class="top">
+    <div class="banner" id="banner" aria-hidden="true"></div>
+    <div class="title-block"><h1 id="h1">ARTIKEL-ABENTEUER</h1><p class="sub">Der, die, das • ein &amp; eine</p></div>
+    <button id="btn-sound" class="icon-btn" aria-pressed="true" aria-label="Sprachausgabe ist an. Zum Ausschalten drücken."></button>
+  </header>
+  <p class="lead">Such dir dein Abenteuer aus!</p>
+  <div id="mode-grid" class="mode-grid"></div>
+  <div id="start-foot" class="start-foot" aria-hidden="true"></div>
+</section>
+
+<section id="screen-sub" class="screen" hidden aria-labelledby="sub-title">
+  <div class="sub-wrap">
+    <div class="sub-head"><button id="sub-back" class="btn-small">← Zurück</button><h2 id="sub-title" class="sub-title"></h2></div>
+    <p id="sub-hint" class="sub-hint"></p>
+    <div id="sub-choices" class="level-grid"></div>
+  </div>
+</section>
+
+<section id="screen-game" class="screen" hidden aria-label="Spiel">
+  <div class="gbar">
+    <button id="btn-back" class="btn-small">← Auswahl</button>
+    <div id="g-title" class="g-title"></div>
+    <button id="btn-sound2" class="icon-btn" aria-pressed="true" aria-label="Sprachausgabe ist an. Zum Ausschalten drücken."></button>
+  </div>
+  <div id="mapstrip" class="mapstrip" role="img" aria-label="Abenteuerkarte"></div>
+  <div class="sr" id="progress-live" role="status" aria-live="polite"></div>
+  <div class="stage" id="stage"></div>
+  <div class="scenery" id="scenery" aria-hidden="true"></div>
+</section>
+
+<section id="screen-end" class="screen" hidden aria-labelledby="end-title">
+  <div class="end-wrap">
+    <div id="end-art" aria-hidden="true"></div>
+    <h2 id="end-title" class="end-title">Abenteuer geschafft!</h2>
+    <p class="end-sub">Du hast den Schatz gefunden. Toll gemacht!</p>
+    <div class="end-btns">
+      <button id="btn-again" class="nextbtn">Noch eine Runde</button>
+      <button id="btn-menu" class="nextbtn btn2">Zurück zur Auswahl</button>
+    </div>
+  </div>
+</section>
+</div>
+<script>
+'use strict';
+/* ARTIKEL-ABENTEUER – Wortschatz (eine zentrale Datenquelle).
+   Bild, Wort, Artikel und Sprachausgabe kommen immer aus demselben Eintrag.
+   Zeile: [Genus, id/Bild, Wort, Schwierigkeit(e/m/h), Kategorie, Ähnlichkeits-Gruppe, Satzangaben]
+   Satzangaben: 's' = steht, 'l' = liegt, 'a:verb,verb' = Tätigkeit (nur Nominativ-Subjekt), '-' = nur neutrale Sätze, '!' am Ende = kein "ein/eine"-Satz */
+const ARTICLES = {
+  m:{ gender:'masculine', definite:'der', indefinite:'ein' },
+  f:{ gender:'feminine',  definite:'die', indefinite:'eine' },
+  n:{ gender:'neuter',    definite:'das', indefinite:'ein' }
+};
+const DIFF_NAME = { e:'easy', m:'medium', h:'hard' };
+const RAW_WORDS = [
+  // ---- DER ----
+  ['m','ball','Ball','e','Spielzeug','redround','l'],
+  ['m','baum','Baum','e','Natur','','s'],
+  ['m','bus','Bus','e','Fahrzeuge','veh','s'],
+  ['m','fisch','Fisch','e','Tiere','','a:schwimmt'],
+  ['m','hund','Hund','e','Tiere','','a:schläft,rennt'],
+  ['m','stern','Stern','e','Natur','sky','-'],
+  ['m','hase','Hase','e','Tiere','ear','a:hüpft,schläft'],
+  ['m','esel','Esel','m','Tiere','ear','a:schläft,rennt'],
+  ['m','igel','Igel','m','Tiere','','a:schläft'],
+  ['m','loewe','Löwe','m','Tiere','cat','a:schläft,rennt'],
+  ['m','tiger','Tiger','m','Tiere','cat','a:schläft,rennt'],
+  ['m','vogel','Vogel','e','Tiere','bird','a:fliegt'],
+  ['m','eimer','Eimer','e','Zuhause','','s'],
+  ['m','besen','Besen','m','Zuhause','','s'],
+  ['m','kuchen','Kuchen','e','Essen','','l'],
+  ['m','affe','Affe','m','Tiere','','a:hüpft,schläft'],
+  ['m','papagei','Papagei','m','Tiere','bird','a:fliegt'],
+  ['m','elefant','Elefant','m','Tiere','','a:schläft'],
+  ['m','schmetterling','Schmetterling','m','Tiere','','a:fliegt'],
+  ['m','apfel','Apfel','e','Essen','redround','l'],
+  ['m','tisch','Tisch','e','Zuhause','','s'],
+  ['m','stuhl','Stuhl','e','Zuhause','','s'],
+  ['m','schuh','Schuh','e','Kleidung','','l'],
+  ['m','hut','Hut','m','Kleidung','hat','l'],
+  ['m','mond','Mond','e','Natur','sky','-!'],
+  ['m','berg','Berg','m','Natur','','s'],
+  ['m','fluss','Fluss','m','Natur','','-'],
+  ['m','schluessel','Schlüssel','h','Abenteuer','','l'],
+  ['m','rucksack','Rucksack','m','Abenteuer','bag','l'],
+  ['m','kompass','Kompass','h','Abenteuer','','l'],
+  ['m','zug','Zug','m','Fahrzeuge','veh','s'],
+  ['m','turm','Turm','h','Abenteuer','','s'],
+  ['m','pilz','Pilz','m','Natur','','s'],
+  ['m','frosch','Frosch','m','Tiere','','a:hüpft,schwimmt,schläft'],
+  ['m','baer','Bär','m','Tiere','','a:schläft,rennt'],
+  ['m','loeffel','Löffel','m','Zuhause','cutlery','l'],
+  // ---- DIE ----
+  ['f','maus','Maus','e','Tiere','','a:rennt,schläft'],
+  ['f','blume','Blume','e','Natur','flower','s'],
+  ['f','hose','Hose','e','Kleidung','clothes','l'],
+  ['f','lupe','Lupe','h','Abenteuer','','l'],
+  ['f','biene','Biene','m','Tiere','','a:fliegt'],
+  ['f','eule','Eule','m','Tiere','bird','a:schläft,fliegt'],
+  ['f','gabel','Gabel','m','Zuhause','cutlery','l'],
+  ['f','ente','Ente','e','Tiere','bird','a:schwimmt'],
+  ['f','schere','Schere','m','Schule','','l'],
+  ['f','tasche','Tasche','e','Schule','bag','l'],
+  ['f','katze','Katze','e','Tiere','cat','a:schläft,rennt'],
+  ['f','lampe','Lampe','e','Zuhause','light','s'],
+  ['f','puppe','Puppe','m','Spielzeug','','s'],
+  ['f','sonne','Sonne','e','Natur','sky','-!'],
+  ['f','kerze','Kerze','m','Zuhause','light','s'],
+  ['f','birne','Birne','e','Essen','','l'],
+  ['f','flasche','Flasche','e','Essen','','s'],
+  ['f','banane','Banane','e','Essen','','l'],
+  ['f','tomate','Tomate','m','Essen','redround','l'],
+  ['f','kamera','Kamera','h','Abenteuer','','l'],
+  ['f','rakete','Rakete','h','Fahrzeuge','air','s'],
+  ['f','zitrone','Zitrone','m','Essen','','l'],
+  ['f','laterne','Laterne','h','Abenteuer','light','s'],
+  ['f','giraffe','Giraffe','m','Tiere','','a:schläft,rennt'],
+  ['f','gitarre','Gitarre','h','Spielzeug','','s'],
+  ['f','sonnenblume','Sonnenblume','h','Natur','flower','s'],
+  ['f','schatztruhe','Schatztruhe','h','Abenteuer','','s'],
+  ['f','uhr','Uhr','e','Zuhause','','s'],
+  ['f','kuh','Kuh','e','Tiere','farm','a:schläft'],
+  ['f','erdbeere','Erdbeere','m','Essen','redround','l'],
+  ['f','brille','Brille','m','Kleidung','','l'],
+  ['f','muetze','Mütze','m','Kleidung','hat','l'],
+  ['f','wolke','Wolke','m','Natur','','-'],
+  // ---- DAS ----
+  ['n','haus','Haus','e','Zuhause','','s'],
+  ['n','sofa','Sofa','m','Zuhause','bed','s'],
+  ['n','krokodil','Krokodil','m','Tiere','','a:schläft,schwimmt'],
+  ['n','auto','Auto','e','Fahrzeuge','veh','s'],
+  ['n','bett','Bett','e','Zuhause','bed','s'],
+  ['n','boot','Boot','m','Fahrzeuge','','a:schwimmt'],
+  ['n','brot','Brot','e','Essen','','l'],
+  ['n','buch','Buch','e','Schule','','l'],
+  ['n','ei','Ei','e','Essen','','l'],
+  ['n','eis','Eis','e','Essen','','-'],
+  ['n','fahrrad','Fahrrad','e','Fahrzeuge','','s'],
+  ['n','fenster','Fenster','m','Zuhause','','-'],
+  ['n','flugzeug','Flugzeug','m','Fahrzeuge','air','a:fliegt'],
+  ['n','glas','Glas','e','Zuhause','','s'],
+  ['n','handy','Handy','m','Zuhause','','l'],
+  ['n','hemd','Hemd','m','Kleidung','clothes','l'],
+  ['n','herz','Herz','m','Alltag','','-'],
+  ['n','kleid','Kleid','m','Kleidung','clothes','l'],
+  ['n','kissen','Kissen','m','Zuhause','bed','l'],
+  ['n','messer','Messer','m','Zuhause','cutlery','l'],
+  ['n','pferd','Pferd','e','Tiere','farm','a:rennt,schläft'],
+  ['n','schaf','Schaf','e','Tiere','farm','a:schläft'],
+  ['n','schwein','Schwein','e','Tiere','farm','a:schläft'],
+  ['n','zelt','Zelt','m','Abenteuer','','s'],
+  ['n','fernglas','Fernglas','h','Abenteuer','','l'],
+  ['n','blatt','Blatt','m','Natur','','l'],
+  ['n','zebra','Zebra','m','Tiere','','a:rennt,schläft']
+];
+const WORDS = RAW_WORDS.map(([g,id,word,d,cat,group,sent])=>{
+  const A = ARTICLES[g];
+  const noIndef = sent.endsWith('!');
+  const s = sent.replace('!','');
+  return {
+    id, word, gender:A.gender, g,
+    definiteArticle:A.definite, indefiniteArticle:A.indefinite,
+    difficulty:DIFF_NAME[d], d, category:cat, illustration:id,
+    group, pos: (s==='s'||s==='l') ? s : '', acts: s.startsWith('a:') ? s.slice(2).split(',') : [], noIndef
+  };
+});
+const WORD_BY_ID = Object.fromEntries(WORDS.map(w=>[w.id,w]));
+/* Der Sprachausgabe-/Anzeigetext kommt immer aus diesen zwei Funktionen */
+const artOf = (w,set) => set==='indef' ? w.indefiniteArticle : w.definiteArticle;
+const phraseOf = (w,set) => artOf(w,set)+' '+w.word;
+/* Illustrationen: eigene SVGs, kein externes Bild. Schlüssel = illustration-Feld in words.js */
+const ART = {"ball":"<circle cx=\"50\" cy=\"52\" r=\"37\" fill=\"#d97e55\"/><path d=\"M21,41 Q50,62 79,41\" stroke=\"#fffdf8\" stroke-width=\"9\" fill=\"none\"/><path d=\"M22,67 Q50,86 78,67\" stroke=\"#8fb9c9\" stroke-width=\"9\" fill=\"none\"/><path d=\"M50,15 Q38,52 50,89\" stroke=\"#eec14a\" stroke-width=\"7\" fill=\"none\"/><circle cx=\"50\" cy=\"52\" r=\"37\" fill=\"none\" stroke=\"#b45e39\" stroke-width=\"3.5\"/><path d=\"M28,32 Q34,24 44,22\" stroke=\"#fff\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\" opacity=\".7\"/>","baum":"<rect x=\"43\" y=\"50\" width=\"14\" height=\"40\" rx=\"3\" fill=\"#a97a4d\"/><circle cx=\"50\" cy=\"36\" r=\"26\" fill=\"#8fa888\"/><circle cx=\"32\" cy=\"48\" r=\"17\" fill=\"#8fa888\"/><circle cx=\"68\" cy=\"48\" r=\"17\" fill=\"#8fa888\"/><circle cx=\"46\" cy=\"28\" r=\"10\" fill=\"#a8c0a1\"/><path d=\"M50,60 L40,48 M50,66 L60,54\" stroke=\"#7a5a3a\" stroke-width=\"3.5\" stroke-linecap=\"round\"/>","bus":"<rect x=\"6\" y=\"26\" width=\"88\" height=\"48\" rx=\"9\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"3\"/><rect x=\"12\" y=\"34\" width=\"15\" height=\"17\" rx=\"2\" fill=\"#eaf6fa\"/><rect x=\"31\" y=\"34\" width=\"15\" height=\"17\" rx=\"2\" fill=\"#eaf6fa\"/><rect x=\"50\" y=\"34\" width=\"15\" height=\"17\" rx=\"2\" fill=\"#eaf6fa\"/><rect x=\"72\" y=\"34\" width=\"16\" height=\"30\" rx=\"2\" fill=\"#eaf6fa\"/><rect x=\"6\" y=\"56\" width=\"62\" height=\"5\" fill=\"#d97e55\"/><circle cx=\"28\" cy=\"76\" r=\"9\" fill=\"#3a3226\"/><circle cx=\"72\" cy=\"76\" r=\"9\" fill=\"#3a3226\"/><circle cx=\"28\" cy=\"76\" r=\"3.5\" fill=\"#cfcfcf\"/><circle cx=\"72\" cy=\"76\" r=\"3.5\" fill=\"#cfcfcf\"/>","fisch":"<path d=\"M72,52 L94,32 V72 Z\" fill=\"#b45e39\"/><ellipse cx=\"44\" cy=\"52\" rx=\"34\" ry=\"22\" fill=\"#d97e55\"/><path d=\"M42,30 Q54,18 64,34Z\" fill=\"#b45e39\"/><path d=\"M30,58 Q36,70 46,70 Q40,60 30,58Z\" fill=\"#b45e39\"/><path d=\"M50,36 Q58,52 50,68\" stroke=\"#b45e39\" stroke-width=\"3\" fill=\"none\"/><circle cx=\"26\" cy=\"46\" r=\"5.5\" fill=\"#fff\"/><circle cx=\"25\" cy=\"46\" r=\"2.6\" fill=\"#3a3226\"/><path d=\"M14,56 Q19,60 24,57\" stroke=\"#3a3226\" stroke-width=\"2.4\" fill=\"none\" stroke-linecap=\"round\"/>","hund":"<ellipse cx=\"20\" cy=\"46\" rx=\"11\" ry=\"22\" fill=\"#a97a4d\" transform=\"rotate(14 20 46)\"/><ellipse cx=\"80\" cy=\"46\" rx=\"11\" ry=\"22\" fill=\"#a97a4d\" transform=\"rotate(-14 80 46)\"/><circle cx=\"50\" cy=\"50\" r=\"31\" fill=\"#e0b985\"/><ellipse cx=\"50\" cy=\"63\" rx=\"17\" ry=\"13\" fill=\"#f3e0c0\"/><circle cx=\"39\" cy=\"44\" r=\"4.4\" fill=\"#3a3226\"/><circle cx=\"61\" cy=\"44\" r=\"4.4\" fill=\"#3a3226\"/><circle cx=\"40.54\" cy=\"42.46\" r=\"1.54\" fill=\"#fff\"/><circle cx=\"62.54\" cy=\"42.46\" r=\"1.54\" fill=\"#fff\"/><ellipse cx=\"50\" cy=\"56\" rx=\"7\" ry=\"5\" fill=\"#3a3226\"/><path d=\"M50,61 V67 M43,69 Q50,75 57,69\" stroke=\"#3a3226\" stroke-width=\"2.4\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M47,71 Q50,83 53,71Z\" fill=\"#d98a92\"/>","stern":"<polygon points=\"50,8 61,37 92,39 68,59 76,90 50,73 24,90 32,59 8,39 39,37\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/>","hase":"<ellipse cx=\"35\" cy=\"26\" rx=\"10\" ry=\"25\" fill=\"#e8dcc8\" stroke=\"#b9a98a\" stroke-width=\"2.5\"/><ellipse cx=\"65\" cy=\"26\" rx=\"10\" ry=\"25\" fill=\"#e8dcc8\" stroke=\"#b9a98a\" stroke-width=\"2.5\"/><ellipse cx=\"35\" cy=\"28\" rx=\"4.5\" ry=\"16\" fill=\"#d98a92\"/><ellipse cx=\"65\" cy=\"28\" rx=\"4.5\" ry=\"16\" fill=\"#d98a92\"/><circle cx=\"50\" cy=\"64\" r=\"28\" fill=\"#e8dcc8\" stroke=\"#b9a98a\" stroke-width=\"2.5\"/><circle cx=\"40\" cy=\"58\" r=\"3.8\" fill=\"#3a3226\"/><circle cx=\"60\" cy=\"58\" r=\"3.8\" fill=\"#3a3226\"/><circle cx=\"41.33\" cy=\"56.67\" r=\"1.3299999999999998\" fill=\"#fff\"/><circle cx=\"61.33\" cy=\"56.67\" r=\"1.3299999999999998\" fill=\"#fff\"/><ellipse cx=\"50\" cy=\"68\" rx=\"5\" ry=\"3.6\" fill=\"#d98a92\"/><path d=\"M50,72 V77 M44,79 Q50,83 56,79\" stroke=\"#3a3226\" stroke-width=\"2.2\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M36,70 L18,68 M36,74 L18,78 M64,70 L82,68 M64,74 L82,78\" stroke=\"#9a8a6a\" stroke-width=\"1.8\"/>","esel":"<ellipse cx=\"29\" cy=\"24\" rx=\"8.5\" ry=\"21\" transform=\"rotate(-16 29 24)\" fill=\"#8f8f8f\"/><ellipse cx=\"71\" cy=\"24\" rx=\"8.5\" ry=\"21\" transform=\"rotate(16 71 24)\" fill=\"#8f8f8f\"/><ellipse cx=\"29\" cy=\"26\" rx=\"4\" ry=\"14\" transform=\"rotate(-16 29 24)\" fill=\"#d98a92\"/><ellipse cx=\"71\" cy=\"26\" rx=\"4\" ry=\"14\" transform=\"rotate(16 71 24)\" fill=\"#d98a92\"/><ellipse cx=\"50\" cy=\"52\" rx=\"24\" ry=\"28\" fill=\"#a9a9a9\"/><path d=\"M42,26 Q50,14 58,26 Q50,34 42,26Z\" fill=\"#6f6f6f\"/><ellipse cx=\"50\" cy=\"72\" rx=\"17\" ry=\"15\" fill=\"#ece4d4\"/><circle cx=\"40\" cy=\"50\" r=\"3.8\" fill=\"#3a3226\"/><circle cx=\"60\" cy=\"50\" r=\"3.8\" fill=\"#3a3226\"/><circle cx=\"41.33\" cy=\"48.67\" r=\"1.3299999999999998\" fill=\"#fff\"/><circle cx=\"61.33\" cy=\"48.67\" r=\"1.3299999999999998\" fill=\"#fff\"/><ellipse cx=\"43\" cy=\"72\" rx=\"2.6\" ry=\"3.4\" fill=\"#3a3226\"/><ellipse cx=\"57\" cy=\"72\" rx=\"2.6\" ry=\"3.4\" fill=\"#3a3226\"/><path d=\"M44,82 Q50,86 56,82\" stroke=\"#3a3226\" stroke-width=\"2.2\" fill=\"none\" stroke-linecap=\"round\"/>","igel":"<path d=\"M10,72 Q6,30 38,22 Q74,14 88,46 Q94,70 82,76 Z\" fill=\"#7a5a3a\"/><path d=\"M16,66 L10,52 M24,52 L18,38 M34,42 L30,27 M46,35 L46,19 M58,36 L64,21 M70,43 L80,31 M80,56 L92,48\" stroke=\"#5a4028\" stroke-width=\"4.5\" stroke-linecap=\"round\"/><ellipse cx=\"72\" cy=\"68\" rx=\"20\" ry=\"13\" fill=\"#e8c9a0\"/><circle cx=\"76\" cy=\"62\" r=\"3.4\" fill=\"#3a3226\"/><circle cx=\"91\" cy=\"69\" r=\"3.8\" fill=\"#3a3226\"/><rect x=\"26\" y=\"74\" width=\"9\" height=\"12\" rx=\"4\" fill=\"#e8c9a0\"/><rect x=\"50\" y=\"76\" width=\"9\" height=\"12\" rx=\"4\" fill=\"#e8c9a0\"/>","loewe":"<g fill=\"#b8641f\"><circle cx=\"50\" cy=\"18\" r=\"13\"/><circle cx=\"78\" cy=\"30\" r=\"13\"/><circle cx=\"88\" cy=\"56\" r=\"13\"/><circle cx=\"76\" cy=\"82\" r=\"13\"/><circle cx=\"50\" cy=\"90\" r=\"13\"/><circle cx=\"24\" cy=\"82\" r=\"13\"/><circle cx=\"12\" cy=\"56\" r=\"13\"/><circle cx=\"22\" cy=\"30\" r=\"13\"/></g><circle cx=\"50\" cy=\"54\" r=\"38\" fill=\"#c9742a\"/><circle cx=\"50\" cy=\"56\" r=\"28\" fill=\"#eec14a\"/><circle cx=\"32\" cy=\"34\" r=\"8\" fill=\"#eec14a\"/><circle cx=\"68\" cy=\"34\" r=\"8\" fill=\"#eec14a\"/><circle cx=\"40\" cy=\"50\" r=\"3.8\" fill=\"#3a3226\"/><circle cx=\"60\" cy=\"50\" r=\"3.8\" fill=\"#3a3226\"/><circle cx=\"41.33\" cy=\"48.67\" r=\"1.3299999999999998\" fill=\"#fff\"/><circle cx=\"61.33\" cy=\"48.67\" r=\"1.3299999999999998\" fill=\"#fff\"/><polygon points=\"50,56 44,63 56,63\" fill=\"#b45e39\"/><path d=\"M50,63 V68 M42,70 Q50,76 58,70\" stroke=\"#3a3226\" stroke-width=\"2.4\" fill=\"none\" stroke-linecap=\"round\"/>","tiger":"<polygon points=\"20,38 24,12 44,28\" fill=\"#e08a3a\"/><polygon points=\"80,38 76,12 56,28\" fill=\"#e08a3a\"/><circle cx=\"50\" cy=\"56\" r=\"31\" fill=\"#e08a3a\"/><path d=\"M50,28 V40 M38,30 L41,42 M62,30 L59,42 M20,52 L32,54 M20,64 L33,62 M80,52 L68,54 M80,64 L67,62\" stroke=\"#3a3226\" stroke-width=\"4\" stroke-linecap=\"round\"/><ellipse cx=\"50\" cy=\"68\" rx=\"17\" ry=\"13\" fill=\"#fff6e6\"/><circle cx=\"39\" cy=\"52\" r=\"3.8\" fill=\"#3a3226\"/><circle cx=\"61\" cy=\"52\" r=\"3.8\" fill=\"#3a3226\"/><circle cx=\"40.33\" cy=\"50.67\" r=\"1.3299999999999998\" fill=\"#fff\"/><circle cx=\"62.33\" cy=\"50.67\" r=\"1.3299999999999998\" fill=\"#fff\"/><polygon points=\"50,60 44,66 56,66\" fill=\"#d98a92\"/><path d=\"M50,66 V71 M43,73 Q50,78 57,73\" stroke=\"#3a3226\" stroke-width=\"2.2\" fill=\"none\" stroke-linecap=\"round\"/>","vogel":"<path d=\"M12,70 L30,58 L30,76Z\" fill=\"#5f93a6\"/><ellipse cx=\"52\" cy=\"62\" rx=\"30\" ry=\"22\" fill=\"#8fb9c9\"/><circle cx=\"74\" cy=\"40\" r=\"17\" fill=\"#8fb9c9\"/><polygon points=\"88,38 100,44 88,48\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"1.8\" stroke-linejoin=\"round\"/><circle cx=\"78\" cy=\"36\" r=\"3.6\" fill=\"#3a3226\"/><circle cx=\"79\" cy=\"35\" r=\"1.2\" fill=\"#fff\"/><path d=\"M36,60 Q52,50 66,68 Q50,76 36,60Z\" fill=\"#5f93a6\"/><path d=\"M52,84 V94 M62,82 V94\" stroke=\"#d97e55\" stroke-width=\"3.6\" stroke-linecap=\"round\"/>","eimer":"<path d=\"M20,34 H80 L71,88 a5,5 0 0 1 -5,4 H34 a5,5 0 0 1 -5,-4 Z\" fill=\"#8fb9c9\" stroke=\"#5f93a6\" stroke-width=\"3.5\"/><rect x=\"15\" y=\"30\" width=\"70\" height=\"9\" rx=\"4\" fill=\"#5f93a6\"/><path d=\"M24,32 C24,4 76,4 76,32\" fill=\"none\" stroke=\"#7a7062\" stroke-width=\"4\"/><path d=\"M34,52 L38,80\" stroke=\"#cfe6ee\" stroke-width=\"4\" stroke-linecap=\"round\"/>","besen":"<rect x=\"45\" y=\"4\" width=\"9\" height=\"56\" rx=\"4\" fill=\"#a97a4d\" transform=\"rotate(8 50 32)\"/><path d=\"M32,58 H68 L78,94 H22 Z\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"3\" stroke-linejoin=\"round\"/><path d=\"M34,70 H66 M30,82 H70 M44,60 V92 M56,60 V92\" stroke=\"#c99a1f\" stroke-width=\"2.5\"/><rect x=\"30\" y=\"52\" width=\"40\" height=\"9\" rx=\"3\" fill=\"#b45e39\"/>","kuchen":"<rect x=\"14\" y=\"52\" width=\"72\" height=\"36\" rx=\"7\" fill=\"#c99a6c\" stroke=\"#a97a4d\" stroke-width=\"3\"/><path d=\"M14,56 Q14,38 50,38 Q86,38 86,56 Q78,66 70,56 Q62,68 54,56 Q46,68 38,56 Q30,66 22,56Z\" fill=\"#fffdf8\" stroke=\"#e0d2b8\" stroke-width=\"2\"/><path d=\"M14,52 Q14,36 50,36 Q86,36 86,52Z\" fill=\"#d98a92\" opacity=\".0\"/><circle cx=\"50\" cy=\"32\" r=\"8\" fill=\"#c9433d\"/><path d=\"M50,24 Q54,14 60,12\" stroke=\"#6d8768\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><rect x=\"22\" y=\"68\" width=\"56\" height=\"5\" rx=\"2\" fill=\"#d98a92\"/>","affe":"<circle cx=\"16\" cy=\"54\" r=\"13\" fill=\"#a97a4d\"/><circle cx=\"84\" cy=\"54\" r=\"13\" fill=\"#a97a4d\"/><circle cx=\"16\" cy=\"54\" r=\"7\" fill=\"#e8c9a0\"/><circle cx=\"84\" cy=\"54\" r=\"7\" fill=\"#e8c9a0\"/><circle cx=\"50\" cy=\"50\" r=\"33\" fill=\"#a97a4d\"/><path d=\"M26,46 Q36,32 50,42 Q64,32 74,46 Q76,64 50,74 Q24,64 26,46Z\" fill=\"#e8c9a0\"/><circle cx=\"40\" cy=\"50\" r=\"4\" fill=\"#3a3226\"/><circle cx=\"60\" cy=\"50\" r=\"4\" fill=\"#3a3226\"/><circle cx=\"41.4\" cy=\"48.6\" r=\"1.4\" fill=\"#fff\"/><circle cx=\"61.4\" cy=\"48.6\" r=\"1.4\" fill=\"#fff\"/><ellipse cx=\"46\" cy=\"62\" rx=\"2\" ry=\"2.6\" fill=\"#7a5a3a\"/><ellipse cx=\"54\" cy=\"62\" rx=\"2\" ry=\"2.6\" fill=\"#7a5a3a\"/><path d=\"M38,69 Q50,78 62,69\" stroke=\"#3a3226\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/>","papagei":"<path d=\"M44,70 L36,98 L48,86 L52,98 L58,72Z\" fill=\"#5f93a6\"/><path d=\"M56,8 C80,10 88,40 72,58 C68,78 58,88 46,88 C32,86 30,66 36,50 C34,28 40,10 56,8Z\" fill=\"#d9503a\"/><path d=\"M62,44 C84,46 84,72 66,80 C72,66 70,54 62,44Z\" fill=\"#5f93a6\"/><circle cx=\"52\" cy=\"26\" r=\"15\" fill=\"#d9503a\"/><path d=\"M60,20 C76,18 78,36 64,38 C68,32 66,26 60,20Z\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"2.2\" stroke-linejoin=\"round\"/><circle cx=\"50\" cy=\"22\" r=\"4.6\" fill=\"#fff\"/><circle cx=\"51\" cy=\"22\" r=\"2.2\" fill=\"#3a3226\"/><path d=\"M24,60 Q18,52 26,46\" stroke=\"#eec14a\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/>","elefant":"<ellipse cx=\"40\" cy=\"60\" rx=\"30\" ry=\"25\" fill=\"#9aa4ab\"/><rect x=\"16\" y=\"76\" width=\"13\" height=\"19\" rx=\"5\" fill=\"#9aa4ab\"/><rect x=\"48\" y=\"76\" width=\"13\" height=\"19\" rx=\"5\" fill=\"#9aa4ab\"/><circle cx=\"64\" cy=\"42\" r=\"21\" fill=\"#9aa4ab\"/><ellipse cx=\"52\" cy=\"46\" rx=\"14\" ry=\"19\" fill=\"#7f8991\"/><circle cx=\"71\" cy=\"37\" r=\"3.4\" fill=\"#3a3226\"/><path d=\"M78,52 Q93,56 89,74 Q87,85 80,80\" fill=\"none\" stroke=\"#9aa4ab\" stroke-width=\"11\" stroke-linecap=\"round\"/><path d=\"M70,58 Q77,64 75,71\" stroke=\"#fffdf8\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M10,56 Q4,64 8,72\" stroke=\"#7f8991\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\"/>","schmetterling":"<path d=\"M48,50 C28,10 4,24 12,48 C16,62 36,60 48,52Z\" fill=\"#d98a92\" stroke=\"#b06670\" stroke-width=\"3\" stroke-linejoin=\"round\"/><path d=\"M52,50 C72,10 96,24 88,48 C84,62 64,60 52,52Z\" fill=\"#d98a92\" stroke=\"#b06670\" stroke-width=\"3\" stroke-linejoin=\"round\"/><path d=\"M48,54 C34,58 24,76 36,86 C44,90 50,72 48,54Z\" fill=\"#8fb9c9\" stroke=\"#5f93a6\" stroke-width=\"3\" stroke-linejoin=\"round\"/><path d=\"M52,54 C66,58 76,76 64,86 C56,90 50,72 52,54Z\" fill=\"#8fb9c9\" stroke=\"#5f93a6\" stroke-width=\"3\" stroke-linejoin=\"round\"/><circle cx=\"26\" cy=\"38\" r=\"6\" fill=\"#fffdf8\"/><circle cx=\"74\" cy=\"38\" r=\"6\" fill=\"#fffdf8\"/><rect x=\"46\" y=\"30\" width=\"8\" height=\"52\" rx=\"4\" fill=\"#3a3226\"/><path d=\"M48,30 Q44,16 36,12 M52,30 Q56,16 64,12\" stroke=\"#3a3226\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/>","apfel":"<path d=\"M50,30 C30,14 10,34 14,56 C18,80 36,92 50,86 C64,92 82,80 86,56 C90,34 70,14 50,30Z\" fill=\"#c9584a\" stroke=\"#9c3d33\" stroke-width=\"3\"/><path d=\"M50,30 Q50,18 56,10\" stroke=\"#7a5a3a\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M56,20 Q72,8 80,22 Q66,30 56,20Z\" fill=\"#8fa888\" stroke=\"#6f8a68\" stroke-width=\"2.5\"/><path d=\"M26,44 Q28,34 36,32\" stroke=\"#fff\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\" opacity=\".6\"/>","tisch":"<rect x=\"10\" y=\"34\" width=\"80\" height=\"12\" rx=\"3\" fill=\"#c99a6c\" stroke=\"#a97a4d\" stroke-width=\"3\"/><rect x=\"18\" y=\"46\" width=\"9\" height=\"42\" fill=\"#a97a4d\"/><rect x=\"73\" y=\"46\" width=\"9\" height=\"42\" fill=\"#a97a4d\"/><rect x=\"26\" y=\"50\" width=\"48\" height=\"5\" fill=\"#b8895a\"/>","stuhl":"<rect x=\"26\" y=\"12\" width=\"9\" height=\"46\" rx=\"3\" fill=\"#a97a4d\"/><rect x=\"26\" y=\"14\" width=\"40\" height=\"8\" rx=\"3\" fill=\"#c99a6c\" stroke=\"#a97a4d\" stroke-width=\"2\"/><rect x=\"26\" y=\"28\" width=\"40\" height=\"8\" rx=\"3\" fill=\"#c99a6c\" stroke=\"#a97a4d\" stroke-width=\"2\"/><rect x=\"22\" y=\"54\" width=\"56\" height=\"10\" rx=\"3\" fill=\"#d97e55\" stroke=\"#b45e39\" stroke-width=\"3\"/><rect x=\"26\" y=\"64\" width=\"8\" height=\"26\" fill=\"#a97a4d\"/><rect x=\"66\" y=\"64\" width=\"8\" height=\"26\" fill=\"#a97a4d\"/>","schuh":"<path d=\"M12,34 L12,70 Q12,80 24,80 L86,80 Q92,80 92,72 Q92,62 78,60 Q62,56 54,44 L48,34Z\" fill=\"#8fb9c9\" stroke=\"#5f8ea2\" stroke-width=\"3\" stroke-linejoin=\"round\"/><rect x=\"10\" y=\"74\" width=\"84\" height=\"10\" rx=\"4\" fill=\"#fffdf8\" stroke=\"#cfc3ad\" stroke-width=\"2.5\"/><path d=\"M26,42 L38,50 M24,52 L38,60\" stroke=\"#fffdf8\" stroke-width=\"3.5\" stroke-linecap=\"round\"/><rect x=\"10\" y=\"28\" width=\"40\" height=\"10\" rx=\"4\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"2.5\"/>","hut":"<ellipse cx=\"50\" cy=\"68\" rx=\"42\" ry=\"10\" fill=\"#c99a6c\" stroke=\"#a97a4d\" stroke-width=\"3\"/><path d=\"M26,68 Q24,22 50,22 Q76,22 74,68Z\" fill=\"#d98a92\" stroke=\"#b5636d\" stroke-width=\"3\"/><path d=\"M27,58 Q50,66 73,58 L74,68 Q50,76 26,68Z\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"2\"/>","mond":"<path d=\"M62,10 C30,10 12,34 14,58 C16,80 36,92 58,88 C40,80 34,62 40,44 C44,30 52,18 62,10Z\" fill=\"#f2d675\" stroke=\"#c99a1f\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/><circle cx=\"27\" cy=\"58\" r=\"3\" fill=\"#c99a1f\" opacity=\".5\"/><circle cx=\"38\" cy=\"76\" r=\"2.4\" fill=\"#c99a1f\" opacity=\".5\"/><path d=\"M76,22 L78,28 L84,30 L78,32 L76,38 L74,32 L68,30 L74,28Z\" fill=\"#eec14a\"/><path d=\"M84,60 L85.5,64 L90,65.5 L85.5,67 L84,71 L82.5,67 L78,65.5 L82.5,64Z\" fill=\"#eec14a\"/>","berg":"<path d=\"M2,88 L38,22 L58,56 L68,40 L98,88Z\" fill=\"#a9a396\" stroke=\"#7d776a\" stroke-width=\"3\" stroke-linejoin=\"round\"/><path d=\"M38,22 L28,42 L36,38 L42,46 L48,38Z\" fill=\"#fffdf8\"/><path d=\"M68,40 L61,52 L66,50 L70,56 L74,50Z\" fill=\"#fffdf8\"/><path d=\"M2,88 H98\" stroke=\"#8fa888\" stroke-width=\"8\"/>","fluss":"<path d=\"M0,40 Q20,24 40,40 T80,40 T100,36 V62 Q90,66 80,62 Q60,48 40,62 Q20,76 0,62Z\" fill=\"#8fb9c9\" stroke=\"#5f8ea2\" stroke-width=\"3\"/><path d=\"M12,50 Q22,46 30,52 M52,50 Q62,46 70,52\" stroke=\"#eaf6fa\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M0,28 Q20,12 40,28 T80,28 T100,24 V34\" fill=\"none\" stroke=\"#8fa888\" stroke-width=\"6\"/><path d=\"M0,74 Q20,88 40,74 T80,74 T100,70\" fill=\"none\" stroke=\"#8fa888\" stroke-width=\"6\"/>","schluessel":"<circle cx=\"28\" cy=\"34\" r=\"20\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"3.5\"/><circle cx=\"28\" cy=\"34\" r=\"8\" fill=\"#fffdf8\" stroke=\"#c99a1f\" stroke-width=\"2.5\"/><rect x=\"40\" y=\"46\" width=\"14\" height=\"46\" rx=\"3\" transform=\"rotate(-40 47 69)\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"3\"/><path d=\"M62,84 L74,72 M72,94 L84,82\" stroke=\"#c99a1f\" stroke-width=\"7\" stroke-linecap=\"round\"/>","rucksack":"<path d=\"M24,32 Q24,10 50,10 Q76,10 76,32 L80,84 Q80,92 70,92 L30,92 Q20,92 20,84Z\" fill=\"#d97e55\" stroke=\"#b45e39\" stroke-width=\"3.5\"/><rect x=\"30\" y=\"52\" width=\"40\" height=\"30\" rx=\"6\" fill=\"#e59a76\" stroke=\"#b45e39\" stroke-width=\"3\"/><path d=\"M30,34 Q50,46 70,34\" fill=\"none\" stroke=\"#b45e39\" stroke-width=\"3.5\"/><rect x=\"42\" y=\"58\" width=\"16\" height=\"9\" rx=\"2\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"2\"/><path d=\"M38,12 Q50,0 62,12\" fill=\"none\" stroke=\"#a97a4d\" stroke-width=\"5\" stroke-linecap=\"round\"/>","kompass":"<circle cx=\"50\" cy=\"52\" r=\"40\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"4\"/><circle cx=\"50\" cy=\"52\" r=\"31\" fill=\"#fffdf8\" stroke=\"#a97a4d\" stroke-width=\"3\"/><rect x=\"45\" y=\"6\" width=\"10\" height=\"9\" rx=\"3\" fill=\"#c99a1f\"/><path d=\"M50,24 L58,52 L50,48 L42,52Z\" fill=\"#c9584a\"/><path d=\"M50,80 L58,52 L50,56 L42,52Z\" fill=\"#8fb9c9\"/><circle cx=\"50\" cy=\"52\" r=\"3.5\" fill=\"#3a3226\"/><path d=\"M50,24 V28 M50,76 V80 M22,52 H26 M74,52 H78\" stroke=\"#3a3226\" stroke-width=\"2.5\" stroke-linecap=\"round\"/>","zug":"<rect x=\"6\" y=\"40\" width=\"46\" height=\"34\" rx=\"5\" fill=\"#d97e55\" stroke=\"#b45e39\" stroke-width=\"3\"/><rect x=\"12\" y=\"46\" width=\"14\" height=\"14\" rx=\"2\" fill=\"#eaf6fa\"/><rect x=\"52\" y=\"30\" width=\"28\" height=\"44\" rx=\"4\" fill=\"#8fb9c9\" stroke=\"#5f8ea2\" stroke-width=\"3\"/><rect x=\"58\" y=\"36\" width=\"16\" height=\"14\" rx=\"2\" fill=\"#eaf6fa\"/><rect x=\"74\" y=\"16\" width=\"18\" height=\"12\" rx=\"3\" fill=\"#5f8ea2\"/><rect x=\"76\" y=\"26\" width=\"14\" height=\"48\" rx=\"2\" fill=\"#5f8ea2\" opacity=\"0\"/><path d=\"M80,30 H92 V74 H80Z\" fill=\"#8fb9c9\" stroke=\"#5f8ea2\" stroke-width=\"3\"/><circle cx=\"20\" cy=\"78\" r=\"9\" fill=\"#3a3226\"/><circle cx=\"46\" cy=\"78\" r=\"9\" fill=\"#3a3226\"/><circle cx=\"66\" cy=\"78\" r=\"9\" fill=\"#3a3226\"/><circle cx=\"20\" cy=\"78\" r=\"3\" fill=\"#cfcfcf\"/><circle cx=\"46\" cy=\"78\" r=\"3\" fill=\"#cfcfcf\"/><circle cx=\"66\" cy=\"78\" r=\"3\" fill=\"#cfcfcf\"/><path d=\"M14,40 V28 H24 V40\" fill=\"#7d776a\"/><path d=\"M16,22 Q14,14 20,10\" stroke=\"#cfc3ad\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\"/>","turm":"<path d=\"M30,92 L34,32 H66 L70,92Z\" fill=\"#c4b8a2\" stroke=\"#8d826c\" stroke-width=\"3.5\"/><path d=\"M26,32 H74 V24 H66 V18 H58 V24 H50 V18 H42 V24 H34 V18 H26Z\" fill=\"#c4b8a2\" stroke=\"#8d826c\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/><path d=\"M44,92 V72 Q50,62 56,72 V92Z\" fill=\"#7a5a3a\"/><rect x=\"45\" y=\"42\" width=\"10\" height=\"16\" rx=\"5\" fill=\"#5f5646\"/><path d=\"M34,50 H40 M60,70 H66 M36,76 H42\" stroke=\"#8d826c\" stroke-width=\"3\"/>","pilz":"<rect x=\"38\" y=\"48\" width=\"24\" height=\"42\" rx=\"10\" fill=\"#f3e9d2\" stroke=\"#cfc3ad\" stroke-width=\"3\"/><path d=\"M8,52 Q8,12 50,12 Q92,12 92,52 Q50,60 8,52Z\" fill=\"#c9584a\" stroke=\"#9c3d33\" stroke-width=\"3.5\"/><circle cx=\"30\" cy=\"34\" r=\"6\" fill=\"#fffdf8\"/><circle cx=\"54\" cy=\"26\" r=\"7\" fill=\"#fffdf8\"/><circle cx=\"72\" cy=\"40\" r=\"5.5\" fill=\"#fffdf8\"/><circle cx=\"46\" cy=\"44\" r=\"4\" fill=\"#fffdf8\"/>","frosch":"<ellipse cx=\"50\" cy=\"66\" rx=\"36\" ry=\"24\" fill=\"#8fb36f\" stroke=\"#6b8d4f\" stroke-width=\"3.5\"/><circle cx=\"32\" cy=\"38\" r=\"14\" fill=\"#8fb36f\" stroke=\"#6b8d4f\" stroke-width=\"3.5\"/><circle cx=\"68\" cy=\"38\" r=\"14\" fill=\"#8fb36f\" stroke=\"#6b8d4f\" stroke-width=\"3.5\"/><circle cx=\"32\" cy=\"37\" r=\"8\" fill=\"#fffdf8\"/><circle cx=\"68\" cy=\"37\" r=\"8\" fill=\"#fffdf8\"/><circle cx=\"33\" cy=\"38\" r=\"4\" fill=\"#3a3226\"/><circle cx=\"67\" cy=\"38\" r=\"4\" fill=\"#3a3226\"/><path d=\"M30,66 Q50,80 70,66\" stroke=\"#3a3226\" stroke-width=\"3.5\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M12,84 Q4,92 16,92 L28,90 M88,84 Q96,92 84,92 L72,90\" stroke=\"#6b8d4f\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/>","baer":"<circle cx=\"24\" cy=\"22\" r=\"11\" fill=\"#a97a4d\" stroke=\"#7a5a3a\" stroke-width=\"3\"/><circle cx=\"76\" cy=\"22\" r=\"11\" fill=\"#a97a4d\" stroke=\"#7a5a3a\" stroke-width=\"3\"/><circle cx=\"24\" cy=\"22\" r=\"5\" fill=\"#d9b68e\"/><circle cx=\"76\" cy=\"22\" r=\"5\" fill=\"#d9b68e\"/><circle cx=\"50\" cy=\"42\" r=\"30\" fill=\"#a97a4d\" stroke=\"#7a5a3a\" stroke-width=\"3.5\"/><ellipse cx=\"50\" cy=\"52\" rx=\"14\" ry=\"11\" fill=\"#e3c9a5\"/><ellipse cx=\"50\" cy=\"47\" rx=\"5.5\" ry=\"4\" fill=\"#3a3226\"/><path d=\"M50,51 V56 M43,58 Q50,63 57,58\" stroke=\"#3a3226\" stroke-width=\"2.5\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"38\" cy=\"36\" r=\"3.6\" fill=\"#3a3226\"/><circle cx=\"62\" cy=\"36\" r=\"3.6\" fill=\"#3a3226\"/><circle cx=\"39.26\" cy=\"34.74\" r=\"1.26\" fill=\"#fff\"/><circle cx=\"63.26\" cy=\"34.74\" r=\"1.26\" fill=\"#fff\"/><path d=\"M26,92 Q28,72 50,72 Q72,72 74,92Z\" fill=\"#a97a4d\" stroke=\"#7a5a3a\" stroke-width=\"3.5\"/>","loeffel":"<ellipse cx=\"50\" cy=\"26\" rx=\"19\" ry=\"23\" fill=\"#c8ced1\" stroke=\"#8e979b\" stroke-width=\"3.5\"/><path d=\"M42,16 Q44,10 50,9\" stroke=\"#fff\" stroke-width=\"3.5\" fill=\"none\" stroke-linecap=\"round\" opacity=\".8\"/><path d=\"M45,48 L44,90 Q50,96 56,90 L55,48Z\" fill=\"#c8ced1\" stroke=\"#8e979b\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/>","maus":"<circle cx=\"26\" cy=\"30\" r=\"15\" fill=\"#b9b9b9\"/><circle cx=\"26\" cy=\"30\" r=\"8.5\" fill=\"#d98a92\"/><circle cx=\"74\" cy=\"30\" r=\"15\" fill=\"#b9b9b9\"/><circle cx=\"74\" cy=\"30\" r=\"8.5\" fill=\"#d98a92\"/><ellipse cx=\"50\" cy=\"58\" rx=\"32\" ry=\"27\" fill=\"#cfcfcf\"/><path d=\"M82,72 Q96,76 92,90\" stroke=\"#d98a92\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"39\" cy=\"52\" r=\"3.8\" fill=\"#3a3226\"/><circle cx=\"61\" cy=\"52\" r=\"3.8\" fill=\"#3a3226\"/><circle cx=\"40.33\" cy=\"50.67\" r=\"1.3299999999999998\" fill=\"#fff\"/><circle cx=\"62.33\" cy=\"50.67\" r=\"1.3299999999999998\" fill=\"#fff\"/><ellipse cx=\"50\" cy=\"63\" rx=\"5.5\" ry=\"4.2\" fill=\"#d98a92\"/><path d=\"M42,66 L22,62 M42,69 L22,73 M58,66 L78,62 M58,69 L78,73\" stroke=\"#7a7062\" stroke-width=\"1.8\"/>","blume":"<path d=\"M50,50 V92\" stroke=\"#6f8a68\" stroke-width=\"6\" stroke-linecap=\"round\"/><path d=\"M50,78 Q30,76 24,60 Q42,60 50,78Z\" fill=\"#8fa888\" stroke=\"#6f8a68\" stroke-width=\"2.5\"/><path d=\"M50,70 Q70,68 76,52 Q58,52 50,70Z\" fill=\"#8fa888\" stroke=\"#6f8a68\" stroke-width=\"2.5\"/><g fill=\"#d98a92\" stroke=\"#b5636d\" stroke-width=\"2.5\"><circle cx=\"50\" cy=\"18\" r=\"13\"/><circle cx=\"74\" cy=\"32\" r=\"13\"/><circle cx=\"68\" cy=\"56\" r=\"0\"/><circle cx=\"26\" cy=\"32\" r=\"13\"/><circle cx=\"36\" cy=\"52\" r=\"13\"/><circle cx=\"64\" cy=\"52\" r=\"13\"/></g><circle cx=\"50\" cy=\"38\" r=\"12\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"2.5\"/>","hose":"<path d=\"M26,12 H74 L79,52 L69,90 H54 L50,48 L46,90 H31 L21,52 Z\" fill=\"#5f93a6\" stroke=\"#3f6f80\" stroke-width=\"3\" stroke-linejoin=\"round\"/><rect x=\"26\" y=\"12\" width=\"48\" height=\"9\" fill=\"#3f6f80\"/><path d=\"M50,21 V48\" stroke=\"#3f6f80\" stroke-width=\"2.5\"/><circle cx=\"50\" cy=\"26\" r=\"2.4\" fill=\"#eec14a\"/><path d=\"M30,60 H42 M58,60 H70\" stroke=\"#8fb9c9\" stroke-width=\"2.4\" stroke-dasharray=\"3 3\"/>","lupe":"<circle cx=\"42\" cy=\"42\" r=\"27\" fill=\"#eaf6fa\" stroke=\"#7a6a4a\" stroke-width=\"7\"/><path d=\"M62,62 L88,88\" stroke=\"#7a6a4a\" stroke-width=\"10\" stroke-linecap=\"round\"/><path d=\"M27,34 Q33,23 46,22\" stroke=\"#fff\" stroke-width=\"4.5\" fill=\"none\" stroke-linecap=\"round\"/>","biene":"<ellipse cx=\"36\" cy=\"34\" rx=\"15\" ry=\"21\" fill=\"#eaf6fa\" stroke=\"#8fb9c9\" stroke-width=\"2.5\" transform=\"rotate(-26 36 34)\"/><ellipse cx=\"64\" cy=\"34\" rx=\"15\" ry=\"21\" fill=\"#eaf6fa\" stroke=\"#8fb9c9\" stroke-width=\"2.5\" transform=\"rotate(26 64 34)\"/><ellipse cx=\"50\" cy=\"64\" rx=\"25\" ry=\"23\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"3\"/><path d=\"M33,52 Q50,60 67,52 M27,66 Q50,76 73,66 M33,79 Q50,86 67,79\" stroke=\"#3a3226\" stroke-width=\"6.5\" fill=\"none\"/><circle cx=\"50\" cy=\"40\" r=\"12\" fill=\"#3a3226\"/><circle cx=\"45\" cy=\"38\" r=\"2.6\" fill=\"#fff\"/><circle cx=\"55\" cy=\"38\" r=\"2.6\" fill=\"#fff\"/><path d=\"M44,30 L39,21 M56,30 L61,21\" stroke=\"#3a3226\" stroke-width=\"2.6\" stroke-linecap=\"round\"/><path d=\"M50,87 L50,96\" stroke=\"#3a3226\" stroke-width=\"4\" stroke-linecap=\"round\"/>","eule":"<path d=\"M24,16 L38,31 H62 L76,16 V66 a26,28 0 0 1 -52,0Z\" fill=\"#a97a4d\" stroke=\"#7a5a3a\" stroke-width=\"3\" stroke-linejoin=\"round\"/><circle cx=\"38\" cy=\"45\" r=\"14\" fill=\"#fffdf8\"/><circle cx=\"62\" cy=\"45\" r=\"14\" fill=\"#fffdf8\"/><circle cx=\"38\" cy=\"46\" r=\"6.5\" fill=\"#3a3226\"/><circle cx=\"62\" cy=\"46\" r=\"6.5\" fill=\"#3a3226\"/><circle cx=\"40\" cy=\"44\" r=\"2\" fill=\"#fff\"/><circle cx=\"64\" cy=\"44\" r=\"2\" fill=\"#fff\"/><polygon points=\"50,50 43,62 57,62\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"2\" stroke-linejoin=\"round\"/><path d=\"M32,72 Q40,66 44,76 M68,72 Q60,66 56,76 M44,78 Q50,84 56,78\" stroke=\"#c99a6c\" stroke-width=\"3.5\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M40,92 L40,84 M60,92 L60,84\" stroke=\"#eec14a\" stroke-width=\"5\" stroke-linecap=\"round\"/>","gabel":"<g stroke=\"#8a8a8a\" stroke-width=\"7\" stroke-linecap=\"round\" fill=\"none\"><path d=\"M32,10 V38 M44,10 V38 M56,10 V38 M68,10 V38\"/><path d=\"M32,38 Q32,52 50,54 Q68,52 68,38\"/><path d=\"M50,54 V92\"/></g>","ente":"<path d=\"M6,70 H94\" stroke=\"#8fb9c9\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M14,62 Q14,86 48,86 Q80,86 82,56 L66,52 Q50,66 30,56Z\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"3\" stroke-linejoin=\"round\"/><circle cx=\"68\" cy=\"34\" r=\"18\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"3\"/><path d=\"M82,34 Q98,36 96,44 Q86,46 82,42Z\" fill=\"#d97e55\" stroke=\"#b45e39\" stroke-width=\"2\" stroke-linejoin=\"round\"/><circle cx=\"68\" cy=\"30\" r=\"3.4\" fill=\"#3a3226\"/><path d=\"M34,66 Q46,60 58,68\" stroke=\"#c99a1f\" stroke-width=\"3.5\" fill=\"none\" stroke-linecap=\"round\"/>","schere":"<ellipse cx=\"25\" cy=\"26\" rx=\"13\" ry=\"11\" fill=\"none\" stroke=\"#b45e39\" stroke-width=\"6\"/><ellipse cx=\"25\" cy=\"74\" rx=\"13\" ry=\"11\" fill=\"none\" stroke=\"#b45e39\" stroke-width=\"6\"/><path d=\"M34,68 L92,34 M34,32 L92,66\" stroke=\"#8a8a8a\" stroke-width=\"8\" stroke-linecap=\"round\"/><circle cx=\"58\" cy=\"50\" r=\"4.5\" fill=\"#3a3226\"/>","tasche":"<path d=\"M30,40 C30,8 70,8 70,40\" fill=\"none\" stroke=\"#7a5a3a\" stroke-width=\"6.5\" stroke-linecap=\"round\"/><path d=\"M14,40 H86 L77,88 H23 Z\" fill=\"#d98a92\" stroke=\"#b06670\" stroke-width=\"3\" stroke-linejoin=\"round\"/><rect x=\"41\" y=\"50\" width=\"18\" height=\"13\" rx=\"2.5\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"2\"/><path d=\"M14,40 L86,40\" stroke=\"#b06670\" stroke-width=\"3\"/>","katze":"<polygon points=\"20,42 24,10 46,30\" fill=\"#9a9a9a\"/><polygon points=\"80,42 76,10 54,30\" fill=\"#9a9a9a\"/><polygon points=\"26,34 28,19 38,29\" fill=\"#d98a92\"/><polygon points=\"74,34 72,19 62,29\" fill=\"#d98a92\"/><circle cx=\"50\" cy=\"57\" r=\"31\" fill=\"#b9b9b9\"/><circle cx=\"39\" cy=\"52\" r=\"4\" fill=\"#3a3226\"/><circle cx=\"61\" cy=\"52\" r=\"4\" fill=\"#3a3226\"/><circle cx=\"40.4\" cy=\"50.6\" r=\"1.4\" fill=\"#fff\"/><circle cx=\"62.4\" cy=\"50.6\" r=\"1.4\" fill=\"#fff\"/><polygon points=\"50,60 45,66 55,66\" fill=\"#d98a92\"/><path d=\"M50,66 Q44,74 38,70 M50,66 Q56,74 62,70\" stroke=\"#3a3226\" stroke-width=\"2.2\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M14,62 L34,64 M14,70 L34,68 M86,62 L66,64 M86,70 L66,68\" stroke=\"#7a7062\" stroke-width=\"2\"/>","lampe":"<path d=\"M30,12 H70 L84,50 H16 Z\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/><rect x=\"45\" y=\"50\" width=\"10\" height=\"32\" fill=\"#a97a4d\"/><ellipse cx=\"50\" cy=\"86\" rx=\"20\" ry=\"7\" fill=\"#a97a4d\"/><path d=\"M40,22 L36,42\" stroke=\"#fff3b8\" stroke-width=\"4\" stroke-linecap=\"round\"/>","puppe":"<path d=\"M30,22 Q50,0 70,22 Q62,12 50,14 Q38,12 30,22Z\" fill=\"#7a4a2a\"/><circle cx=\"30\" cy=\"34\" r=\"7\" fill=\"#7a4a2a\"/><circle cx=\"70\" cy=\"34\" r=\"7\" fill=\"#7a4a2a\"/><circle cx=\"50\" cy=\"28\" r=\"17\" fill=\"#f3d9b6\"/><circle cx=\"43\" cy=\"28\" r=\"2.6\" fill=\"#3a3226\"/><circle cx=\"57\" cy=\"28\" r=\"2.6\" fill=\"#3a3226\"/><path d=\"M44,35 Q50,40 56,35\" stroke=\"#b06670\" stroke-width=\"2.2\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M50,44 L76,90 H24 Z\" fill=\"#d98a92\" stroke=\"#b06670\" stroke-width=\"3\" stroke-linejoin=\"round\"/><path d=\"M38,56 L24,66 M62,56 L76,66\" stroke=\"#f3d9b6\" stroke-width=\"5\" stroke-linecap=\"round\"/><rect x=\"38\" y=\"90\" width=\"7\" height=\"6\" fill=\"#f3d9b6\"/><rect x=\"55\" y=\"90\" width=\"7\" height=\"6\" fill=\"#f3d9b6\"/>","sonne":"<g stroke=\"#eec14a\" stroke-width=\"6\" stroke-linecap=\"round\"><line x1=\"50\" y1=\"20\" x2=\"50\" y2=\"8\"/><line x1=\"65\" y1=\"24.01923788646684\" x2=\"71\" y2=\"13.626933041053576\"/><line x1=\"75.98076211353316\" y1=\"35\" x2=\"86.37306695894642\" y2=\"28.999999999999996\"/><line x1=\"80\" y1=\"50\" x2=\"92\" y2=\"50\"/><line x1=\"75.98076211353316\" y1=\"65\" x2=\"86.37306695894642\" y2=\"70.99999999999999\"/><line x1=\"65\" y1=\"75.98076211353316\" x2=\"71\" y2=\"86.37306695894642\"/><line x1=\"50.00000000000001\" y1=\"80\" x2=\"50.00000000000001\" y2=\"92\"/><line x1=\"35\" y1=\"75.98076211353316\" x2=\"28.999999999999996\" y2=\"86.37306695894642\"/><line x1=\"24.019237886466847\" y1=\"65.00000000000001\" x2=\"13.626933041053583\" y2=\"71.00000000000001\"/><line x1=\"20\" y1=\"50.00000000000001\" x2=\"8\" y2=\"50.00000000000001\"/><line x1=\"24.019237886466843\" y1=\"35\" x2=\"13.626933041053576\" y2=\"28.999999999999996\"/><line x1=\"34.999999999999986\" y1=\"24.019237886466847\" x2=\"28.999999999999982\" y2=\"13.62693304105359\"/></g><circle cx=\"50\" cy=\"50\" r=\"24\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"3.5\"/>","kerze":"<ellipse cx=\"50\" cy=\"90\" rx=\"26\" ry=\"5\" fill=\"#c99a1f\"/><rect x=\"37\" y=\"44\" width=\"26\" height=\"46\" rx=\"3\" fill=\"#fffdf8\" stroke=\"#c9b48a\" stroke-width=\"3\"/><path d=\"M38,56 Q44,66 38,72\" fill=\"#f3e0c0\"/><path d=\"M50,44 V36\" stroke=\"#3a3226\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M50,10 C62,22 62,34 50,37 C38,34 38,22 50,10Z\" fill=\"#eec14a\" stroke=\"#d97e55\" stroke-width=\"2.8\"/><path d=\"M50,22 C55,28 55,33 50,34 C45,33 45,28 50,22Z\" fill=\"#d97e55\"/>","birne":"<path d=\"M50,24 C62,24 66,36 66,46 C84,56 86,84 50,89 C14,84 16,56 34,46 C34,36 38,24 50,24Z\" fill=\"#a8c85c\" stroke=\"#7a9a36\" stroke-width=\"3.5\"/><path d=\"M50,24 V10\" stroke=\"#7a5a3a\" stroke-width=\"4.5\" stroke-linecap=\"round\"/><path d=\"M52,16 Q66,6 74,16 Q62,24 52,16Z\" fill=\"#6d8768\"/><path d=\"M36,64 Q40,74 48,78\" stroke=\"#d3e692\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\"/>","flasche":"<rect x=\"41\" y=\"6\" width=\"18\" height=\"11\" rx=\"3\" fill=\"#d97e55\"/><path d=\"M43,17 H57 V32 C72,40 74,52 74,62 V86 a6,6 0 0 1 -6,6 H32 a6,6 0 0 1 -6,-6 V62 C26,52 28,40 43,32Z\" fill=\"#cfe6ee\" stroke=\"#5f93a6\" stroke-width=\"3.5\"/><path d=\"M26,54 H74 V86 a6,6 0 0 1 -6,6 H32 a6,6 0 0 1 -6,-6Z\" fill=\"#8fb9c9\" opacity=\".7\"/><rect x=\"32\" y=\"62\" width=\"36\" height=\"18\" rx=\"2\" fill=\"#fffdf8\" opacity=\".85\"/>","banane":"<path d=\"M12,58 C18,28 54,12 88,26 C92,30 88,36 82,35 C56,33 40,46 36,76 C30,84 14,80 12,58 Z\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/><path d=\"M86,24 L94,14\" stroke=\"#7a5a3a\" stroke-width=\"6\" stroke-linecap=\"round\"/><path d=\"M22,56 C28,38 48,26 70,26\" stroke=\"#f7de8a\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\"/>","tomate":"<circle cx=\"50\" cy=\"56\" r=\"34\" fill=\"#d9503a\" stroke=\"#a83a28\" stroke-width=\"3.5\"/><path d=\"M50,24 L42,14 M50,24 L58,12 M50,24 L34,30 M50,24 L66,30 M50,24 L50,34\" stroke=\"#6d8768\" stroke-width=\"6\" stroke-linecap=\"round\"/><path d=\"M34,50 Q38,40 48,40\" stroke=\"#fff\" stroke-width=\"3.5\" fill=\"none\" opacity=\".6\" stroke-linecap=\"round\"/>","kamera":"<rect x=\"10\" y=\"32\" width=\"80\" height=\"54\" rx=\"9\" fill=\"#5a5a5a\"/><rect x=\"10\" y=\"32\" width=\"80\" height=\"15\" rx=\"7\" fill=\"#7a7a7a\"/><rect x=\"26\" y=\"22\" width=\"20\" height=\"12\" rx=\"3\" fill=\"#7a7a7a\"/><circle cx=\"50\" cy=\"62\" r=\"20\" fill=\"#cfcfcf\" stroke=\"#2f2f2f\" stroke-width=\"5\"/><circle cx=\"50\" cy=\"62\" r=\"12\" fill=\"#8fb9c9\"/><circle cx=\"50\" cy=\"62\" r=\"5\" fill=\"#2f4f5a\"/><circle cx=\"78\" cy=\"42\" r=\"4\" fill=\"#eec14a\"/>","rakete":"<path d=\"M50,4 C72,22 74,54 67,72 H33 C26,54 28,22 50,4Z\" fill=\"#fffdf8\" stroke=\"#7a7062\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/><path d=\"M50,4 C59,12 63,22 64,30 H36 C37,22 41,12 50,4Z\" fill=\"#d97e55\"/><circle cx=\"50\" cy=\"46\" r=\"10.5\" fill=\"#8fb9c9\" stroke=\"#5f93a6\" stroke-width=\"3.5\"/><path d=\"M33,58 L16,82 L33,76Z M67,58 L84,82 L67,76Z\" fill=\"#d97e55\"/><path d=\"M41,72 H59 L50,96Z\" fill=\"#eec14a\" stroke=\"#d97e55\" stroke-width=\"2.5\" stroke-linejoin=\"round\"/>","zitrone":"<path d=\"M6,52 L14,48 Q20,26 50,26 Q80,26 86,48 L94,52 L86,56 Q80,78 50,78 Q20,78 14,56Z\" fill=\"#f0d54a\" stroke=\"#c9ae1f\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/><path d=\"M52,26 Q62,12 78,14 Q70,28 52,26Z\" fill=\"#6d8768\"/><path d=\"M26,44 Q34,36 44,36\" stroke=\"#fff6b8\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\"/>","laterne":"<path d=\"M50,28 V12 H84\" stroke=\"#a97a4d\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\"/><rect x=\"34\" y=\"26\" width=\"32\" height=\"7\" rx=\"3\" fill=\"#3a3226\"/><circle cx=\"50\" cy=\"60\" r=\"29\" fill=\"#d97e55\" stroke=\"#b45e39\" stroke-width=\"3.5\"/><path d=\"M50,32 V90 M31,40 Q36,60 31,80 M69,40 Q64,60 69,80\" fill=\"none\" stroke=\"#b45e39\" stroke-width=\"2.6\"/><circle cx=\"50\" cy=\"60\" r=\"11\" fill=\"#fff3b8\"/><rect x=\"38\" y=\"88\" width=\"24\" height=\"6\" rx=\"3\" fill=\"#3a3226\"/>","giraffe":"<path d=\"M42,58 L46,22 H58 L62,58Z\" fill=\"#eec14a\"/><ellipse cx=\"54\" cy=\"16\" rx=\"15\" ry=\"11\" fill=\"#eec14a\"/><path d=\"M44,8 L42,0 M58,8 L60,0\" stroke=\"#a97a4d\" stroke-width=\"3\" stroke-linecap=\"round\"/><circle cx=\"42\" cy=\"8\" r=\"3\" fill=\"#a97a4d\"/><circle cx=\"60\" cy=\"8\" r=\"3\" fill=\"#a97a4d\"/><ellipse cx=\"64\" cy=\"20\" rx=\"7\" ry=\"5\" fill=\"#f3d98a\"/><circle cx=\"50\" cy=\"13\" r=\"2.8\" fill=\"#3a3226\"/><ellipse cx=\"50\" cy=\"76\" rx=\"32\" ry=\"20\" fill=\"#eec14a\"/><rect x=\"26\" y=\"86\" width=\"9\" height=\"12\" rx=\"3\" fill=\"#eec14a\"/><rect x=\"64\" y=\"86\" width=\"9\" height=\"12\" rx=\"3\" fill=\"#eec14a\"/><g fill=\"#b8641f\"><circle cx=\"50\" cy=\"40\" r=\"4\"/><circle cx=\"56\" cy=\"30\" r=\"3.4\"/><circle cx=\"38\" cy=\"72\" r=\"5\"/><circle cx=\"56\" cy=\"76\" r=\"5\"/><circle cx=\"68\" cy=\"70\" r=\"4\"/><circle cx=\"48\" cy=\"52\" r=\"3.2\"/></g>","gitarre":"<path d=\"M62,38 L92,8\" stroke=\"#7a5a3a\" stroke-width=\"9\" stroke-linecap=\"round\"/><rect x=\"86\" y=\"2\" width=\"10\" height=\"14\" rx=\"2\" fill=\"#5a4028\" transform=\"rotate(45 91 9)\"/><path d=\"M40,34 C52,34 58,44 52,52 C64,58 62,76 50,82 C38,92 12,86 10,66 C8,54 18,48 28,48 C22,40 28,34 40,34Z\" fill=\"#d9a05b\" stroke=\"#a97a4d\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/><circle cx=\"34\" cy=\"62\" r=\"8\" fill=\"#5a4028\"/><path d=\"M44,78 L58,66 M60,48 L70,36\" stroke=\"#fffdf8\" stroke-width=\"2\" stroke-linecap=\"round\"/><rect x=\"40\" y=\"74\" width=\"12\" height=\"4\" rx=\"1.5\" fill=\"#5a4028\" transform=\"rotate(-40 46 76)\"/>","sonnenblume":"<path d=\"M50,92 V54\" stroke=\"#6d8768\" stroke-width=\"6\" stroke-linecap=\"round\"/><path d=\"M50,80 Q28,74 24,58 Q44,58 50,76Z\" fill=\"#8fa888\"/><path d=\"M50,84 Q72,78 76,64 Q56,62 50,80Z\" fill=\"#8fa888\"/><g fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"2\"><ellipse cx=\"50\" cy=\"16\" rx=\"7\" ry=\"13\" transform=\"rotate(0 50 38)\"/><ellipse cx=\"50\" cy=\"16\" rx=\"7\" ry=\"13\" transform=\"rotate(30 50 38)\"/><ellipse cx=\"50\" cy=\"16\" rx=\"7\" ry=\"13\" transform=\"rotate(60 50 38)\"/><ellipse cx=\"50\" cy=\"16\" rx=\"7\" ry=\"13\" transform=\"rotate(90 50 38)\"/><ellipse cx=\"50\" cy=\"16\" rx=\"7\" ry=\"13\" transform=\"rotate(120 50 38)\"/><ellipse cx=\"50\" cy=\"16\" rx=\"7\" ry=\"13\" transform=\"rotate(150 50 38)\"/><ellipse cx=\"50\" cy=\"16\" rx=\"7\" ry=\"13\" transform=\"rotate(180 50 38)\"/><ellipse cx=\"50\" cy=\"16\" rx=\"7\" ry=\"13\" transform=\"rotate(210 50 38)\"/><ellipse cx=\"50\" cy=\"16\" rx=\"7\" ry=\"13\" transform=\"rotate(240 50 38)\"/><ellipse cx=\"50\" cy=\"16\" rx=\"7\" ry=\"13\" transform=\"rotate(270 50 38)\"/><ellipse cx=\"50\" cy=\"16\" rx=\"7\" ry=\"13\" transform=\"rotate(300 50 38)\"/><ellipse cx=\"50\" cy=\"16\" rx=\"7\" ry=\"13\" transform=\"rotate(330 50 38)\"/></g><circle cx=\"50\" cy=\"38\" r=\"15\" fill=\"#7a5a3a\" stroke=\"#5a4028\" stroke-width=\"2.5\"/><circle cx=\"45\" cy=\"34\" r=\"2\" fill=\"#5a4028\"/><circle cx=\"55\" cy=\"40\" r=\"2\" fill=\"#5a4028\"/><circle cx=\"50\" cy=\"44\" r=\"2\" fill=\"#5a4028\"/>","schatztruhe":"<path d=\"M10,52 V84 Q10,90 16,90 H84 Q90,90 90,84 V52Z\" fill=\"#a97a4d\" stroke=\"#7a5a3a\" stroke-width=\"3.5\"/><path d=\"M10,52 Q10,16 50,16 Q90,16 90,52Z\" fill=\"#c99a6c\" stroke=\"#7a5a3a\" stroke-width=\"3.5\"/><rect x=\"6\" y=\"48\" width=\"88\" height=\"9\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"2.5\"/><rect x=\"26\" y=\"16\" width=\"9\" height=\"74\" fill=\"#eec14a\" opacity=\".0\"/><path d=\"M28,20 V90 M72,20 V90\" stroke=\"#c99a1f\" stroke-width=\"5\"/><rect x=\"42\" y=\"46\" width=\"16\" height=\"20\" rx=\"4\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"3\"/><circle cx=\"50\" cy=\"55\" r=\"3\" fill=\"#3a3226\"/><rect x=\"49\" y=\"55\" width=\"2\" height=\"6\" fill=\"#3a3226\"/>","uhr":"<circle cx=\"50\" cy=\"52\" r=\"40\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"3.5\" opacity=\"0\"/><circle cx=\"50\" cy=\"54\" r=\"38\" fill=\"#fffdf8\" stroke=\"#d97e55\" stroke-width=\"7\"/><path d=\"M50,22 V28 M50,80 V86 M18,54 H24 M76,54 H82\" stroke=\"#3a3226\" stroke-width=\"3.5\" stroke-linecap=\"round\"/><path d=\"M50,54 L50,34\" stroke=\"#3a3226\" stroke-width=\"4.5\" stroke-linecap=\"round\"/><path d=\"M50,54 L64,62\" stroke=\"#d97e55\" stroke-width=\"4.5\" stroke-linecap=\"round\"/><circle cx=\"50\" cy=\"54\" r=\"3.5\" fill=\"#3a3226\"/>","kuh":"<path d=\"M24,26 Q18,10 10,14 M76,26 Q82,10 90,14\" stroke=\"#e6dcc3\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/><ellipse cx=\"14\" cy=\"38\" rx=\"11\" ry=\"7\" fill=\"#fffdf8\" stroke=\"#cfc3ad\" stroke-width=\"2.5\" transform=\"rotate(20 14 38)\"/><ellipse cx=\"86\" cy=\"38\" rx=\"11\" ry=\"7\" fill=\"#fffdf8\" stroke=\"#cfc3ad\" stroke-width=\"2.5\" transform=\"rotate(-20 86 38)\"/><rect x=\"24\" y=\"14\" width=\"52\" height=\"60\" rx=\"24\" fill=\"#fffdf8\" stroke=\"#cfc3ad\" stroke-width=\"3.5\"/><path d=\"M30,22 Q44,14 46,32 Q36,38 28,34Z\" fill=\"#3a3226\" opacity=\".85\"/><path d=\"M70,48 Q62,40 74,34 Q82,42 76,50Z\" fill=\"#3a3226\" opacity=\".85\"/><ellipse cx=\"50\" cy=\"62\" rx=\"26\" ry=\"20\" fill=\"#e8a8a4\" stroke=\"#c9847f\" stroke-width=\"3\"/><ellipse cx=\"41\" cy=\"63\" rx=\"3.6\" ry=\"5\" fill=\"#8f4f4b\"/><ellipse cx=\"59\" cy=\"63\" rx=\"3.6\" ry=\"5\" fill=\"#8f4f4b\"/><circle cx=\"38\" cy=\"40\" r=\"3.8\" fill=\"#3a3226\"/><circle cx=\"62\" cy=\"40\" r=\"3.8\" fill=\"#3a3226\"/><circle cx=\"39.33\" cy=\"38.67\" r=\"1.3299999999999998\" fill=\"#fff\"/><circle cx=\"63.33\" cy=\"38.67\" r=\"1.3299999999999998\" fill=\"#fff\"/>","erdbeere":"<path d=\"M50,92 C20,76 12,50 18,38 Q30,28 50,32 Q70,28 82,38 C88,50 80,76 50,92Z\" fill=\"#c9584a\" stroke=\"#9c3d33\" stroke-width=\"3.5\"/><path d=\"M50,32 L36,16 L44,28 L30,26 L42,34 L24,36 L48,38 L50,44 L52,38 L76,36 L58,34 L70,26 L56,28 L64,16Z\" fill=\"#8fa888\" stroke=\"#6f8a68\" stroke-width=\"2.5\" stroke-linejoin=\"round\"/><g fill=\"#f6e5a0\"><ellipse cx=\"34\" cy=\"52\" rx=\"2.4\" ry=\"3.4\"/><ellipse cx=\"50\" cy=\"56\" rx=\"2.4\" ry=\"3.4\"/><ellipse cx=\"66\" cy=\"52\" rx=\"2.4\" ry=\"3.4\"/><ellipse cx=\"42\" cy=\"68\" rx=\"2.4\" ry=\"3.4\"/><ellipse cx=\"58\" cy=\"68\" rx=\"2.4\" ry=\"3.4\"/><ellipse cx=\"50\" cy=\"80\" rx=\"2.4\" ry=\"3.4\"/></g>","brille":"<circle cx=\"27\" cy=\"54\" r=\"21\" fill=\"#eaf6fa\" fill-opacity=\".7\" stroke=\"#a97a4d\" stroke-width=\"6\"/><circle cx=\"73\" cy=\"54\" r=\"21\" fill=\"#eaf6fa\" fill-opacity=\".7\" stroke=\"#a97a4d\" stroke-width=\"6\"/><path d=\"M48,50 Q50,44 52,50\" stroke=\"#a97a4d\" stroke-width=\"6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M6,50 L2,40 M94,50 L98,40\" stroke=\"#a97a4d\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M16,46 Q20,40 26,38\" stroke=\"#fff\" stroke-width=\"3.5\" fill=\"none\" stroke-linecap=\"round\"/>","muetze":"<path d=\"M12,66 Q10,22 50,18 Q90,22 88,66Z\" fill=\"#d97e55\" stroke=\"#b45e39\" stroke-width=\"3.5\"/><rect x=\"8\" y=\"62\" width=\"84\" height=\"18\" rx=\"9\" fill=\"#fffdf8\" stroke=\"#cfc3ad\" stroke-width=\"3\"/><path d=\"M30,26 V62 M50,18 V62 M70,26 V62\" stroke=\"#b45e39\" stroke-width=\"2.5\" opacity=\".6\"/><circle cx=\"50\" cy=\"14\" r=\"9\" fill=\"#fffdf8\" stroke=\"#cfc3ad\" stroke-width=\"3\"/>","wolke":"<path d=\"M24,74 Q6,74 8,58 Q10,44 26,46 Q30,26 50,26 Q68,24 74,42 Q92,40 92,58 Q92,74 76,74Z\" fill=\"#eaf1f4\" stroke=\"#8fb9c9\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/><path d=\"M30,84 L26,92 M50,84 L46,92 M70,84 L66,92\" stroke=\"#8fb9c9\" stroke-width=\"4\" stroke-linecap=\"round\"/>","haus":"<rect x=\"18\" y=\"46\" width=\"64\" height=\"44\" fill=\"#d98a92\" stroke=\"#b06670\" stroke-width=\"3\"/><path d=\"M10,48 L50,14 L90,48Z\" fill=\"#b45e39\" stroke=\"#8a4726\" stroke-width=\"3\" stroke-linejoin=\"round\"/><rect x=\"42\" y=\"62\" width=\"17\" height=\"28\" rx=\"2\" fill=\"#a97a4d\"/><circle cx=\"55\" cy=\"77\" r=\"1.8\" fill=\"#eec14a\"/><rect x=\"24\" y=\"56\" width=\"13\" height=\"13\" fill=\"#cfe6ee\" stroke=\"#5f93a6\" stroke-width=\"2.4\"/><rect x=\"64\" y=\"56\" width=\"13\" height=\"13\" fill=\"#cfe6ee\" stroke=\"#5f93a6\" stroke-width=\"2.4\"/><rect x=\"68\" y=\"20\" width=\"9\" height=\"18\" fill=\"#a97a4d\"/>","sofa":"<rect x=\"10\" y=\"22\" width=\"80\" height=\"38\" rx=\"11\" fill=\"#8fa888\" stroke=\"#6d8768\" stroke-width=\"3\"/><rect x=\"3\" y=\"44\" width=\"20\" height=\"38\" rx=\"8\" fill=\"#6d8768\"/><rect x=\"77\" y=\"44\" width=\"20\" height=\"38\" rx=\"8\" fill=\"#6d8768\"/><rect x=\"21\" y=\"50\" width=\"28\" height=\"28\" rx=\"6\" fill=\"#a8c0a1\" stroke=\"#6d8768\" stroke-width=\"3\"/><rect x=\"51\" y=\"50\" width=\"28\" height=\"28\" rx=\"6\" fill=\"#a8c0a1\" stroke=\"#6d8768\" stroke-width=\"3\"/><rect x=\"14\" y=\"82\" width=\"7\" height=\"9\" rx=\"2\" fill=\"#a97a4d\"/><rect x=\"79\" y=\"82\" width=\"7\" height=\"9\" rx=\"2\" fill=\"#a97a4d\"/>","krokodil":"<path d=\"M4,62 Q10,40 34,44 L88,38 Q98,40 98,50 L90,54 L96,58 L84,62 L44,66 Q24,80 4,62Z\" fill=\"#6d9a5a\" stroke=\"#4f7a40\" stroke-width=\"3\" stroke-linejoin=\"round\"/><path d=\"M60,62 L90,54 M60,66 L84,62\" stroke=\"#fffdf8\" stroke-width=\"0\"/><path d=\"M62,52 l4,6 l4,-6 M74,50 l4,6 l4,-6 M60,64 l4,-5 l4,5 M72,62 l4,-5 l4,5\" fill=\"#fffdf8\" stroke=\"#fffdf8\" stroke-width=\"2\" stroke-linejoin=\"round\"/><circle cx=\"50\" cy=\"40\" r=\"6\" fill=\"#fffdf8\" stroke=\"#4f7a40\" stroke-width=\"2.5\"/><circle cx=\"51\" cy=\"40\" r=\"2.6\" fill=\"#3a3226\"/><path d=\"M18,48 L22,38 L28,46 L34,36 L40,44\" stroke=\"#4f7a40\" stroke-width=\"3\" fill=\"none\" stroke-linejoin=\"round\"/><rect x=\"20\" y=\"64\" width=\"9\" height=\"12\" rx=\"3\" fill=\"#6d9a5a\"/><rect x=\"46\" y=\"66\" width=\"9\" height=\"11\" rx=\"3\" fill=\"#6d9a5a\"/>","auto":"<path d=\"M6,62 L6,52 Q6,44 16,42 L28,40 L38,24 Q41,20 46,20 H64 Q69,20 72,24 L82,40 L90,42 Q96,44 96,52 V62Z\" fill=\"#d97e55\" stroke=\"#b45e39\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/><path d=\"M36,40 L43,27 H50 V40Z M55,40 V27 H63 L71,40Z\" fill=\"#eaf6fa\" stroke=\"#b45e39\" stroke-width=\"2\"/><rect x=\"4\" y=\"58\" width=\"94\" height=\"10\" rx=\"4\" fill=\"#b45e39\"/><circle cx=\"28\" cy=\"70\" r=\"11\" fill=\"#3a3226\"/><circle cx=\"76\" cy=\"70\" r=\"11\" fill=\"#3a3226\"/><circle cx=\"28\" cy=\"70\" r=\"4\" fill=\"#cfcfcf\"/><circle cx=\"76\" cy=\"70\" r=\"4\" fill=\"#cfcfcf\"/><circle cx=\"92\" cy=\"52\" r=\"3.5\" fill=\"#eec14a\"/>","bett":"<rect x=\"8\" y=\"30\" width=\"8\" height=\"52\" rx=\"3\" fill=\"#a97a4d\"/><rect x=\"84\" y=\"46\" width=\"8\" height=\"36\" rx=\"3\" fill=\"#a97a4d\"/><rect x=\"8\" y=\"58\" width=\"84\" height=\"14\" rx=\"4\" fill=\"#c99a6c\" stroke=\"#a97a4d\" stroke-width=\"3\"/><path d=\"M16,58 V50 Q16,44 24,44 H84 V58Z\" fill=\"#8fb9c9\" stroke=\"#5f8ea2\" stroke-width=\"3\"/><rect x=\"18\" y=\"34\" width=\"26\" height=\"14\" rx=\"7\" fill=\"#fffdf8\" stroke=\"#cfc3ad\" stroke-width=\"3\"/><path d=\"M50,48 L60,58 M66,46 L76,58\" stroke=\"#fffdf8\" stroke-width=\"3\" stroke-linecap=\"round\" opacity=\".7\"/>","boot":"<path d=\"M6,52 H94 Q92,78 76,84 H24 Q8,78 6,52Z\" fill=\"#c9584a\" stroke=\"#9c3d33\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/><path d=\"M6,52 H94\" stroke=\"#fffdf8\" stroke-width=\"6\"/><path d=\"M50,52 V10\" stroke=\"#7a5a3a\" stroke-width=\"4\"/><path d=\"M52,12 L84,42 H52Z\" fill=\"#fffdf8\" stroke=\"#cfc3ad\" stroke-width=\"3\" stroke-linejoin=\"round\"/><path d=\"M48,22 L20,42 H48Z\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"3\" stroke-linejoin=\"round\"/><path d=\"M0,90 Q12,84 24,90 T48,90 T72,90 T100,90\" stroke=\"#8fb9c9\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\"/>","brot":"<path d=\"M8,60 Q4,24 50,22 Q96,24 92,60 Q92,82 76,84 H24 Q8,82 8,60Z\" fill=\"#d9a05b\" stroke=\"#a9702e\" stroke-width=\"3.5\"/><path d=\"M28,34 L38,54 M46,28 L56,52 M64,32 L74,52\" stroke=\"#f1d29a\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M20,70 Q50,78 80,70\" stroke=\"#a9702e\" stroke-width=\"2.5\" fill=\"none\" opacity=\".5\"/>","buch":"<path d=\"M10,22 H46 Q50,22 50,26 V86 Q50,82 46,82 H10Z\" fill=\"#fffdf8\" stroke=\"#cfc3ad\" stroke-width=\"3\"/><path d=\"M90,22 H54 Q50,22 50,26 V86 Q50,82 54,82 H90Z\" fill=\"#fffdf8\" stroke=\"#cfc3ad\" stroke-width=\"3\"/><path d=\"M6,30 V88 H50 H94 V30\" fill=\"none\" stroke=\"#8fb9c9\" stroke-width=\"5\" stroke-linejoin=\"round\"/><path d=\"M16,36 H42 M16,46 H42 M16,56 H36 M58,36 H84 M58,46 H84 M58,56 H78\" stroke=\"#c9c0ac\" stroke-width=\"3\" stroke-linecap=\"round\"/>","ei":"<path d=\"M50,8 C24,8 14,48 14,64 C14,84 30,94 50,94 C70,94 86,84 86,64 C86,48 76,8 50,8Z\" fill=\"#fbf3df\" stroke=\"#d9c9a3\" stroke-width=\"3.5\"/><path d=\"M30,40 Q34,26 44,20\" stroke=\"#fff\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\" opacity=\".8\"/><circle cx=\"62\" cy=\"62\" r=\"3\" fill=\"#d9c9a3\"/><circle cx=\"40\" cy=\"72\" r=\"2.4\" fill=\"#d9c9a3\"/>","eis":"<path d=\"M30,50 H70 L50,94Z\" fill=\"#e0b070\" stroke=\"#b8863f\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/><path d=\"M38,56 L56,76 M52,54 L40,78 M62,56 L48,88\" stroke=\"#b8863f\" stroke-width=\"2\" opacity=\".6\"/><circle cx=\"50\" cy=\"40\" r=\"24\" fill=\"#d98a92\" stroke=\"#b5636d\" stroke-width=\"3.5\"/><path d=\"M28,50 Q50,60 72,50\" stroke=\"#b5636d\" stroke-width=\"3\" fill=\"none\"/><circle cx=\"62\" cy=\"16\" r=\"7\" fill=\"#c9584a\" stroke=\"#9c3d33\" stroke-width=\"2.5\"/><path d=\"M62,10 Q64,4 68,3\" stroke=\"#6f8a68\" stroke-width=\"2.5\" fill=\"none\"/><path d=\"M34,32 Q38,26 44,24\" stroke=\"#fff\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\" opacity=\".6\"/>","fahrrad":"<circle cx=\"24\" cy=\"66\" r=\"20\" fill=\"none\" stroke=\"#3a3226\" stroke-width=\"5\"/><circle cx=\"76\" cy=\"66\" r=\"20\" fill=\"none\" stroke=\"#3a3226\" stroke-width=\"5\"/><path d=\"M24,66 L42,38 H66 L76,66 M42,38 L52,66 H24 M52,66 L66,38 M40,30 H50 M64,30 L68,24 H78\" stroke=\"#d97e55\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><circle cx=\"52\" cy=\"66\" r=\"4\" fill=\"#3a3226\"/>","fenster":"<rect x=\"14\" y=\"8\" width=\"72\" height=\"80\" rx=\"4\" fill=\"#a97a4d\" stroke=\"#7a5a3a\" stroke-width=\"3.5\"/><rect x=\"22\" y=\"16\" width=\"25\" height=\"30\" fill=\"#cfe6ee\"/><rect x=\"53\" y=\"16\" width=\"25\" height=\"30\" fill=\"#cfe6ee\"/><rect x=\"22\" y=\"52\" width=\"25\" height=\"28\" fill=\"#cfe6ee\"/><rect x=\"53\" y=\"52\" width=\"25\" height=\"28\" fill=\"#cfe6ee\"/><path d=\"M26,40 L36,22 M57,40 L67,22\" stroke=\"#fff\" stroke-width=\"3.5\" stroke-linecap=\"round\" opacity=\".8\"/><rect x=\"8\" y=\"86\" width=\"84\" height=\"8\" rx=\"2\" fill=\"#c99a6c\" stroke=\"#7a5a3a\" stroke-width=\"2.5\"/>","flugzeug":"<path d=\"M6,52 Q6,42 20,42 H70 Q94,42 96,52 Q94,62 70,62 H20 Q6,62 6,52Z\" fill=\"#fffdf8\" stroke=\"#cfc3ad\" stroke-width=\"3.5\"/><path d=\"M40,44 L28,12 H42 L64,44Z\" fill=\"#8fb9c9\" stroke=\"#5f8ea2\" stroke-width=\"3\" stroke-linejoin=\"round\"/><path d=\"M40,60 L28,92 H42 L64,60Z\" fill=\"#8fb9c9\" stroke=\"#5f8ea2\" stroke-width=\"3\" stroke-linejoin=\"round\"/><path d=\"M12,42 L6,28 H18 L24,42Z\" fill=\"#d97e55\" stroke=\"#b45e39\" stroke-width=\"2.5\" stroke-linejoin=\"round\"/><circle cx=\"66\" cy=\"50\" r=\"3\" fill=\"#8fb9c9\"/><circle cx=\"78\" cy=\"50\" r=\"3\" fill=\"#8fb9c9\"/><circle cx=\"54\" cy=\"50\" r=\"3\" fill=\"#8fb9c9\"/>","glas":"<path d=\"M24,14 H76 L70,86 Q70,92 64,92 H36 Q30,92 30,86Z\" fill=\"#eaf6fa\" fill-opacity=\".8\" stroke=\"#8fb9c9\" stroke-width=\"4\" stroke-linejoin=\"round\"/><path d=\"M28,42 H72 L69,84 Q69,88 64,88 H36 Q31,88 31,84Z\" fill=\"#8fb9c9\" opacity=\".75\"/><path d=\"M34,22 L36,70\" stroke=\"#fff\" stroke-width=\"4\" stroke-linecap=\"round\" opacity=\".8\"/>","handy":"<rect x=\"28\" y=\"6\" width=\"44\" height=\"88\" rx=\"9\" fill=\"#5f6d78\" stroke=\"#3a3226\" stroke-width=\"3.5\"/><rect x=\"33\" y=\"16\" width=\"34\" height=\"62\" rx=\"3\" fill=\"#cfe6ee\"/><path d=\"M38,30 H62 M38,42 H56\" stroke=\"#8fb9c9\" stroke-width=\"4\" stroke-linecap=\"round\"/><circle cx=\"50\" cy=\"86\" r=\"4\" fill=\"#cfc3ad\"/><rect x=\"44\" y=\"9\" width=\"12\" height=\"3\" rx=\"1.5\" fill=\"#3a3226\"/>","hemd":"<path d=\"M34,10 L8,28 L16,48 L28,42 V90 H72 V42 L84,48 L92,28 L66,10 L50,26Z\" fill=\"#8fb9c9\" stroke=\"#5f8ea2\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/><path d=\"M34,10 L50,34 L66,10\" fill=\"#fffdf8\" stroke=\"#5f8ea2\" stroke-width=\"3\" stroke-linejoin=\"round\"/><path d=\"M50,34 V90\" stroke=\"#5f8ea2\" stroke-width=\"2.5\"/><circle cx=\"55\" cy=\"50\" r=\"2.2\" fill=\"#fffdf8\"/><circle cx=\"55\" cy=\"64\" r=\"2.2\" fill=\"#fffdf8\"/><circle cx=\"55\" cy=\"78\" r=\"2.2\" fill=\"#fffdf8\"/>","herz":"<path d=\"M50,90 C16,66 6,46 10,32 C14,16 36,12 50,30 C64,12 86,16 90,32 C94,46 84,66 50,90Z\" fill=\"#c9584a\" stroke=\"#9c3d33\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/><path d=\"M22,32 Q26,24 34,24\" stroke=\"#fff\" stroke-width=\"4.5\" fill=\"none\" stroke-linecap=\"round\" opacity=\".6\"/>","kleid":"<path d=\"M38,8 L44,26 H56 L62,8 L70,12 L64,34 L88,90 H12 L36,34 L30,12Z\" fill=\"#d98a92\" stroke=\"#b5636d\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/><rect x=\"38\" y=\"30\" width=\"24\" height=\"8\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"2.5\"/><circle cx=\"30\" cy=\"76\" r=\"3\" fill=\"#fffdf8\"/><circle cx=\"50\" cy=\"68\" r=\"3\" fill=\"#fffdf8\"/><circle cx=\"70\" cy=\"76\" r=\"3\" fill=\"#fffdf8\"/><circle cx=\"50\" cy=\"84\" r=\"3\" fill=\"#fffdf8\"/>","kissen":"<path d=\"M16,22 Q50,12 84,22 Q92,50 84,78 Q50,88 16,78 Q8,50 16,22Z\" fill=\"#eec14a\" stroke=\"#c99a1f\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/><path d=\"M30,36 L70,64 M70,36 L30,64\" stroke=\"#c99a1f\" stroke-width=\"2.5\" opacity=\".5\"/><circle cx=\"50\" cy=\"50\" r=\"5\" fill=\"#c99a1f\"/><path d=\"M22,30 Q28,26 36,26\" stroke=\"#fff\" stroke-width=\"3.5\" fill=\"none\" stroke-linecap=\"round\" opacity=\".6\"/>","messer":"<path d=\"M20,20 Q24,6 40,8 Q46,60 36,70 H24Z\" fill=\"#c8ced1\" stroke=\"#8e979b\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/><rect x=\"24\" y=\"68\" width=\"16\" height=\"26\" rx=\"5\" fill=\"#7a5a3a\" stroke=\"#4e3a26\" stroke-width=\"3\"/><path d=\"M30,18 Q32,12 36,12\" stroke=\"#fff\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\" opacity=\".8\"/>","pferd":"<path d=\"M26,92 V64 M38,92 V66 M66,92 V66 M78,92 V64\" stroke=\"#8f5f36\" stroke-width=\"7\" stroke-linecap=\"round\"/><path d=\"M14,46 Q10,40 14,34\" stroke=\"#5c3a1d\" stroke-width=\"7\" fill=\"none\" stroke-linecap=\"round\"/><ellipse cx=\"46\" cy=\"56\" rx=\"36\" ry=\"17\" fill=\"#b8763f\" stroke=\"#8f5f36\" stroke-width=\"3.5\"/><path d=\"M62,50 L66,16 Q70,8 80,8 L96,24 Q98,34 90,36 L82,34 L80,48Z\" fill=\"#b8763f\" stroke=\"#8f5f36\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/><path d=\"M72,12 L74,2 L80,10Z\" fill=\"#8f5f36\"/><path d=\"M64,18 Q56,32 62,48\" stroke=\"#5c3a1d\" stroke-width=\"6\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"82\" cy=\"18\" r=\"2.8\" fill=\"#3a3226\"/><circle cx=\"93\" cy=\"29\" r=\"1.8\" fill=\"#3a3226\"/>","schaf":"<path d=\"M34,92 V74 M64,92 V74\" stroke=\"#3a3226\" stroke-width=\"6\" stroke-linecap=\"round\"/><g fill=\"#fffdf8\" stroke=\"#cfc3ad\" stroke-width=\"3\"><circle cx=\"30\" cy=\"50\" r=\"17\"/><circle cx=\"46\" cy=\"38\" r=\"18\"/><circle cx=\"64\" cy=\"44\" r=\"18\"/><circle cx=\"70\" cy=\"62\" r=\"15\"/><circle cx=\"50\" cy=\"66\" r=\"18\"/><circle cx=\"30\" cy=\"66\" r=\"14\"/></g><ellipse cx=\"78\" cy=\"48\" rx=\"13\" ry=\"15\" fill=\"#5c4a3a\" stroke=\"#3a3226\" stroke-width=\"3\"/><circle cx=\"74\" cy=\"45\" r=\"2.8\" fill=\"#3a3226\"/><circle cx=\"84\" cy=\"45\" r=\"2.8\" fill=\"#3a3226\"/><circle cx=\"74.98\" cy=\"44.02\" r=\"0.9799999999999999\" fill=\"#fff\"/><circle cx=\"84.98\" cy=\"44.02\" r=\"0.9799999999999999\" fill=\"#fff\"/><path d=\"M66,34 Q60,40 66,44\" stroke=\"#3a3226\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\" opacity=\"0\"/>","schwein":"<path d=\"M30,92 V76 M68,92 V76\" stroke=\"#c9847f\" stroke-width=\"7\" stroke-linecap=\"round\"/><ellipse cx=\"46\" cy=\"58\" rx=\"36\" ry=\"26\" fill=\"#eab0ac\" stroke=\"#c9847f\" stroke-width=\"3.5\"/><path d=\"M10,52 Q2,50 6,40 Q14,44 12,50\" stroke=\"#c9847f\" stroke-width=\"3.5\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"72\" cy=\"48\" r=\"20\" fill=\"#eab0ac\" stroke=\"#c9847f\" stroke-width=\"3.5\"/><path d=\"M62,34 L58,22 L72,30Z\" fill=\"#d99590\" stroke=\"#c9847f\" stroke-width=\"3\" stroke-linejoin=\"round\"/><ellipse cx=\"84\" cy=\"54\" rx=\"9\" ry=\"7\" fill=\"#f4c6c2\" stroke=\"#c9847f\" stroke-width=\"2.5\"/><circle cx=\"81\" cy=\"54\" r=\"1.8\" fill=\"#8f4f4b\"/><circle cx=\"87\" cy=\"54\" r=\"1.8\" fill=\"#8f4f4b\"/><circle cx=\"70\" cy=\"44\" r=\"3\" fill=\"#3a3226\"/>","zelt":"<path d=\"M4,88 L50,14 L96,88Z\" fill=\"#d97e55\" stroke=\"#b45e39\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/><path d=\"M50,14 L50,88 M50,14 L74,88\" stroke=\"#b45e39\" stroke-width=\"2.5\" opacity=\".6\"/><path d=\"M50,88 L50,48 L68,88Z\" fill=\"#6b3d22\"/><path d=\"M50,14 V4\" stroke=\"#7a5a3a\" stroke-width=\"4\"/><path d=\"M50,4 L64,8 L50,12Z\" fill=\"#eec14a\"/><path d=\"M0,90 H100\" stroke=\"#8fa888\" stroke-width=\"6\"/>","fernglas":"<rect x=\"10\" y=\"30\" width=\"34\" height=\"46\" rx=\"12\" fill=\"#5f93a6\" stroke=\"#3f6f80\" stroke-width=\"3\"/><rect x=\"56\" y=\"30\" width=\"34\" height=\"46\" rx=\"12\" fill=\"#5f93a6\" stroke=\"#3f6f80\" stroke-width=\"3\"/><rect x=\"38\" y=\"44\" width=\"24\" height=\"16\" rx=\"5\" fill=\"#3f6f80\"/><circle cx=\"27\" cy=\"62\" r=\"11\" fill=\"#cfe6ee\" stroke=\"#3f6f80\" stroke-width=\"3\"/><circle cx=\"73\" cy=\"62\" r=\"11\" fill=\"#cfe6ee\" stroke=\"#3f6f80\" stroke-width=\"3\"/><rect x=\"14\" y=\"22\" width=\"26\" height=\"12\" rx=\"5\" fill=\"#3f6f80\"/><rect x=\"60\" y=\"22\" width=\"26\" height=\"12\" rx=\"5\" fill=\"#3f6f80\"/>","blatt":"<path d=\"M50,92 C10,80 6,40 16,18 C44,16 86,28 86,60 C86,78 70,90 50,92Z\" fill=\"#8fa888\" stroke=\"#6f8a68\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/><path d=\"M50,92 Q44,60 22,26 M42,68 L24,70 M46,56 L66,46 M38,44 L26,40 M52,76 L72,70\" stroke=\"#d6e6cf\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/>","zebra":"<ellipse cx=\"44\" cy=\"58\" rx=\"31\" ry=\"19\" fill=\"#fffdf8\" stroke=\"#3a3226\" stroke-width=\"3\"/><path d=\"M22,44 V72 M32,40 V74 M42,39 V76 M52,40 V74 M62,44 V70\" stroke=\"#3a3226\" stroke-width=\"5.5\"/><path d=\"M66,52 L76,26 Q88,18 96,28 L98,40 Q94,50 80,54Z\" fill=\"#fffdf8\" stroke=\"#3a3226\" stroke-width=\"3\" stroke-linejoin=\"round\"/><path d=\"M78,32 L90,34 M76,40 L92,42\" stroke=\"#3a3226\" stroke-width=\"4\"/><path d=\"M74,26 L72,14 L84,22Z\" fill=\"#fffdf8\" stroke=\"#3a3226\" stroke-width=\"2.5\" stroke-linejoin=\"round\"/><path d=\"M74,26 Q70,34 66,46\" stroke=\"#3a3226\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"88\" cy=\"32\" r=\"2.4\" fill=\"#3a3226\"/><ellipse cx=\"96\" cy=\"38\" rx=\"3\" ry=\"2\" fill=\"#3a3226\"/><rect x=\"22\" y=\"70\" width=\"7\" height=\"22\" rx=\"2\" fill=\"#fffdf8\" stroke=\"#3a3226\" stroke-width=\"3\"/><rect x=\"58\" y=\"70\" width=\"7\" height=\"22\" rx=\"2\" fill=\"#fffdf8\" stroke=\"#3a3226\" stroke-width=\"3\"/><path d=\"M14,54 Q4,62 8,76\" stroke=\"#3a3226\" stroke-width=\"4\" fill=\"none\" stroke-linecap=\"round\"/>"};
+const SCENE_ART = {
+  wegweiser:`<rect x="46" y="12" width="8" height="80" rx="3" fill="#a97a4d" stroke="#7a5a3a" stroke-width="2.5"/><path d="M52,16 H82 L93,25 L82,34 H52Z" fill="#d98a92" stroke="#b5636d" stroke-width="3" stroke-linejoin="round"/><path d="M48,38 H18 L7,47 L18,56 H48Z" fill="#8fb9c9" stroke="#5f8ea2" stroke-width="3" stroke-linejoin="round"/><path d="M52,60 H80 L91,69 L80,78 H52Z" fill="#eec14a" stroke="#c99a1f" stroke-width="3" stroke-linejoin="round"/><path d="M26,94 H74" stroke="#8fa888" stroke-width="6" stroke-linecap="round"/>`,
+  bruecke:`<path d="M0,58 Q50,14 100,58 V70 H0Z" fill="#c99a6c" stroke="#7a5a3a" stroke-width="3.5" stroke-linejoin="round"/><path d="M16,48 V70 M32,36 V70 M50,31 V70 M68,36 V70 M84,48 V70" stroke="#7a5a3a" stroke-width="3"/><path d="M0,44 Q50,0 100,44" fill="none" stroke="#a97a4d" stroke-width="4" stroke-linecap="round"/><path d="M0,88 Q12,80 25,88 T50,88 T75,88 T100,88" fill="none" stroke="#8fb9c9" stroke-width="5" stroke-linecap="round"/>`,
+  hoehle:`<path d="M0,92 L22,38 Q50,2 78,38 L100,92Z" fill="#a9a396" stroke="#7d776a" stroke-width="3.5" stroke-linejoin="round"/><path d="M28,92 Q28,50 50,50 Q72,50 72,92Z" fill="#4e463a"/><circle cx="50" cy="80" r="5.5" fill="#f2d675"/><circle cx="50" cy="80" r="10" fill="#f2d675" opacity=".3"/><path d="M14,70 Q24,58 30,66 M72,60 Q84,54 88,66" stroke="#8fa888" stroke-width="5" fill="none" stroke-linecap="round"/>`,
+  karte:`<path d="M10,20 L36,12 L64,22 L90,14 V80 L64,88 L36,78 L10,86Z" fill="#f3e3b8" stroke="#b8935a" stroke-width="3" stroke-linejoin="round"/><path d="M36,12 V78 M64,22 V88" stroke="#b8935a" stroke-width="2" opacity=".6"/><path d="M18,66 Q30,40 46,54 T78,34" stroke="#c9584a" stroke-width="3.5" stroke-dasharray="1 7" stroke-linecap="round" fill="none"/><path d="M72,28 L84,40 M84,28 L72,40" stroke="#c9584a" stroke-width="5" stroke-linecap="round"/>`,
+  kammer:`<path d="M10,52 V84 Q10,90 16,90 H84 Q90,90 90,84 V52Z" fill="#a97a4d" stroke="#7a5a3a" stroke-width="3.5"/><path d="M10,52 L18,26 H82 L90,52Z" fill="#c99a6c" stroke="#7a5a3a" stroke-width="3.5" stroke-linejoin="round"/><ellipse cx="50" cy="30" rx="30" ry="9" fill="#f2d675" stroke="#c99a1f" stroke-width="3"/><circle cx="36" cy="26" r="7" fill="#eec14a" stroke="#c99a1f" stroke-width="2.5"/><circle cx="52" cy="22" r="7" fill="#eec14a" stroke="#c99a1f" stroke-width="2.5"/><circle cx="66" cy="28" r="7" fill="#eec14a" stroke="#c99a1f" stroke-width="2.5"/><rect x="6" y="48" width="88" height="9" fill="#eec14a" stroke="#c99a1f" stroke-width="2.5"/><rect x="42" y="46" width="16" height="20" rx="4" fill="#eec14a" stroke="#c99a1f" stroke-width="3"/><path d="M86,10 L88,16 L94,18 L88,20 L86,26 L84,20 L78,18 L84,16Z" fill="#f2d675"/><path d="M12,14 L13.5,18 L18,19.5 L13.5,21 L12,25 L10.5,21 L6,19.5 L10.5,18Z" fill="#f2d675"/>`,
+  ruine:`<path d="M10,92 V40 H22 V32 H34 V40 H40 V92Z M62,92 V54 H74 V46 H86 V54 H92 V92Z" fill="#c4b8a2" stroke="#8d826c" stroke-width="3.5" stroke-linejoin="round"/><path d="M40,60 Q50,48 62,60 V92 H40Z" fill="#b5a98f" stroke="#8d826c" stroke-width="3"/><path d="M14,70 Q20,60 26,70 M66,76 Q72,68 78,76" stroke="#8fa888" stroke-width="5" fill="none" stroke-linecap="round"/>`,
+  baumchen:`<rect x="46" y="60" width="8" height="30" rx="2" fill="#a97a4d"/><path d="M50,8 L76,48 H24Z" fill="#8fa888" stroke="#6f8a68" stroke-width="3" stroke-linejoin="round"/><path d="M50,28 L82,70 H18Z" fill="#8fa888" stroke="#6f8a68" stroke-width="3" stroke-linejoin="round"/>`,
+  muenze:`<circle cx="50" cy="50" r="38" fill="#eec14a" stroke="#c99a1f" stroke-width="5"/><circle cx="50" cy="50" r="27" fill="none" stroke="#c99a1f" stroke-width="3"/><path d="M50,32 L55,46 L70,46 L58,55 L62,70 L50,61 L38,70 L42,55 L30,46 L45,46Z" fill="#f6dc86" stroke="#c99a1f" stroke-width="2" stroke-linejoin="round"/>`,
+  funke:`<path d="M50,6 L58,40 L94,50 L58,60 L50,94 L42,60 L6,50 L42,40Z" fill="#f2d675" stroke="#c99a1f" stroke-width="3" stroke-linejoin="round"/>`
+};
+function explorerSvgInner(o){
+  o = o||{};
+  const hat=o.hat||'#eec14a', hatD=o.hatD||'#c99a1f', shirt=o.shirt||'#d97e55', shirtD=o.shirtD||'#b45e39', hair=o.hair||'#7a5a3a', skin=o.skin||'#f0c9a0';
+  return `<rect x="58" y="44" width="26" height="34" rx="8" fill="#a97a4d" stroke="#7a5a3a" stroke-width="3"/><rect x="31" y="76" width="12" height="16" rx="4" fill="#6b5a45"/><rect x="51" y="76" width="12" height="16" rx="4" fill="#6b5a45"/><rect x="26" y="44" width="40" height="36" rx="13" fill="${shirt}" stroke="${shirtD}" stroke-width="3"/><path d="M62,50 Q74,52 74,66" stroke="#7a5a3a" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="46" cy="31" r="16" fill="${skin}" stroke="#c99a6c" stroke-width="3"/><path d="M31,29 Q33,19 46,18 Q59,19 61,29 Q52,24 46,24 Q38,24 31,29Z" fill="${hair}"/><circle cx="40" cy="33" r="2.4" fill="#3a3226"/><circle cx="52" cy="33" r="2.4" fill="#3a3226"/><path d="M41,39 Q46,43 51,39" stroke="#3a3226" stroke-width="2.4" fill="none" stroke-linecap="round"/><ellipse cx="46" cy="22" rx="27" ry="6.5" fill="${hat}" stroke="${hatD}" stroke-width="3"/><path d="M28,21 Q28,6 46,6 Q64,6 64,21Z" fill="${hat}" stroke="${hatD}" stroke-width="3"/><path d="M29,18 H63" stroke="${shirtD}" stroke-width="4"/>`;
+}
+
+function artSvg(id, cls){ return `<svg viewBox="0 0 100 100" class="${cls||'art'}" aria-hidden="true" focusable="false">${ART[id]||SCENE_ART[id]||''}</svg>`; }
+function explorerSvg(o, cls){ return `<svg viewBox="0 0 100 100" class="${cls||'art'}" aria-hidden="true" focusable="false">${explorerSvgInner(o)}</svg>`; }
+/* ===== Zufall & Hilfsfunktionen ===== */
+function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+function shuffle(a){ const r=a.slice(); for(let i=r.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [r[i],r[j]]=[r[j],r[i]]; } return r; }
+const ROUND_TARGET = 8;
+const SKINS = ['sk0','sk1','sk2','sk3','sk4'];          // neutrale Farbvarianten – nie an einen Artikel gebunden
+const GENDERS = ['m','f','n'];
+const cap = s => s.charAt(0).toUpperCase()+s.slice(1);
+
+/* ===== Wortpools je Stufe ===== */
+function poolFor(level){
+  const ds = level==='leicht' ? ['e'] : level==='mittel' ? ['e','m'] : ['m','h'];
+  return WORDS.filter(w=>ds.includes(w.d));
+}
+
+/* ===== Rundenzustand: sorgt für Abwechslung innerhalb einer Runde ===== */
+function newRoundState(){
+  return { used:new Set(), lastTask:new Set(), recentCats:[], repeats:0, pc3:[0,0,0], pc2:[0,0], last3:[], last2:[],
+           einCount:{f:0,mn:0,m:0,n:0}, indefTasks:0, usedPre:[], gq:[], catCount:{} };
+}
+function pickWord(R, pool, g, taken, filter){
+  let c = pool.filter(w=>(!g||w.g===g) && (!filter||filter(w)) && !taken.some(t=>t.id===w.id || (w.group && t.group===w.group)));
+  let fresh = c.filter(w=>!R.used.has(w.id));
+  if(!fresh.length){ R.repeats++; fresh = c.filter(w=>!R.lastTask.has(w.id)); if(!fresh.length) fresh = c; }
+  const better = fresh.filter(w=>!R.recentCats.includes(w.category));
+  if(better.length) fresh = better;
+  const cc = w=>R.catCount[w.category]||0, minC = Math.min(...fresh.map(cc));
+  fresh = fresh.filter(w=>cc(w)===minC);
+  const w = pick(fresh);
+  R.used.add(w.id); R.catCount[w.category]=cc(w)+1; R.recentCats.push(w.category); if(R.recentCats.length>2) R.recentCats.shift();
+  return w;
+}
+function endTask(R, words){ R.lastTask = new Set(words.map(w=>w.id)); }
+function remainingByGender(R, pool){ const r={m:0,f:0,n:0}; pool.forEach(w=>{ if(!R.used.has(w.id)) r[w.g]++; }); return r; }
+/* Genusverteilung für eine Aufgabe mit n Wörtern: je 1 pro Genus, Rest nach Vorrat (max. 3 je Genus) */
+function genderMix(R, pool, n, needEach=true){
+  const out = needEach ? GENDERS.slice() : [];
+  const cnt = {m:0,f:0,n:0}; out.forEach(g=>cnt[g]++);
+  while(out.length<n){
+    const rem = remainingByGender(R,pool);
+    const cand = GENDERS.filter(g=>cnt[g]<3).map(g=>({g, free:rem[g]-cnt[g]+Math.random()*0.9}));
+    cand.sort((a,b)=>b.free-a.free);
+    out.push(cand[0].g); cnt[cand[0].g]++;
+  }
+  return shuffle(out);
+}
+
+/* ===== Antwortpositionen: gleichmäßig verteilt, nie 3× dieselbe Stelle hintereinander ===== */
+function layoutOptions(R, arts, correct){
+  const n = arts.length, cnt = n===3 ? R.pc3 : R.pc2, last = n===3 ? R.last3 : R.last2;
+  const min = Math.min(...cnt);
+  let cands = [...Array(n).keys()].filter(i=>cnt[i]===min);
+  const nr = cands.filter(i=>!(last.length>=1 && last[last.length-1]===i));
+  if(nr.length) cands = nr;
+  const p = pick(cands);
+  cnt[p]++; last.push(p);
+  const others = shuffle(arts.filter(a=>a!==correct));
+  const order = []; let oi=0;
+  for(let i=0;i<n;i++) order.push(i===p ? correct : others[oi++]);
+  const skins = shuffle(SKINS).slice(0,n);
+  return order.map((art,i)=>({ art, skin:skins[i] }));
+}
+
+/* ===== Satzvorlagen (nur Nominativ, nur Subjekt/Existenz – keine Akkusativ-/Dativ-Konstruktionen) ===== */
+function templatesFor(w){
+  const N = w.word, specific = [], general = [];
+  w.acts.forEach(v=>specific.push({ pre:'', post:`${N} ${v}.`, type:'act' }));
+  if(w.pos==='s'){ specific.push({ pre:'Hier steht', post:`${N}.`, type:'pos' }); specific.push({ pre:'Dort steht', post:`${N}.`, type:'pos' }); }
+  if(w.pos==='l'){ specific.push({ pre:'Hier liegt', post:`${N}.`, type:'pos' }); specific.push({ pre:'Dort liegt', post:`${N}.`, type:'pos' }); }
+  general.push({ pre:'Hier ist', post:`${N}.`, type:'ist' }); general.push({ pre:'Dort ist', post:`${N}.`, type:'ist' }); general.push({ pre:'', post:`${N} ist da.`, type:'da' });
+  return { specific, general };
+}
+function chooseTemplate(R, w){
+  const t = templatesFor(w);
+  let list = (t.specific.length && Math.random()<0.8) ? t.specific : t.general;
+  const fresh = list.filter(x=>!R.usedPre.includes(x.pre+'|'+x.type));
+  if(fresh.length) list = fresh;
+  const x = pick(list); R.usedPre.push(x.pre+'|'+x.type); if(R.usedPre.length>3) R.usedPre.shift();
+  return x;
+}
+function sentenceText(tpl, article){ return tpl.pre ? `${tpl.pre} ${article} ${tpl.post}` : `${cap(article)} ${tpl.post}`; }
+/* Welche Artikel passen in den Satz? (Nominativ-Kongruenz – unabhängig von der Wortliste geprüft) */
+const FITS = { der:['masculine'], die:['feminine'], das:['neuter'], ein:['masculine','neuter'], eine:['feminine'] };
+function fittingOptions(w, optionArts){ return optionArts.filter(a=>FITS[a].includes(w.gender)); }
+
+/* ===== Aufgabenplaner ===== */
+function planFork(R, level, g){
+  const w = pickWord(R, poolFor(level), g, []);
+  endTask(R,[w]);
+  return { kind:'fork', set:'def', ids:[w.id], options:layoutOptions(R, ['der','die','das'], w.definiteArticle) };
+}
+function planPack(R, level){
+  const pool = poolFor(level);
+  const n = level==='leicht' ? 3 : level==='mittel' ? randInt(4,5) : randInt(5,6);
+  const gs = genderMix(R, pool, n), taken=[];
+  gs.forEach(g=>taken.push(pickWord(R,pool,g,taken)));
+  endTask(R,taken);
+  /* Karte und richtiger Rucksack dürfen nicht „direkt untereinander“ liegen, sonst merken sich Kinder nur die Position:
+     Spalte der Karte im Tablett (i%3) und Zeile (i/3) dürfen höchstens selten mit der Position des richtigen Rucksacks übereinstimmen. */
+  let order, bagArts, tries=0;
+  do {
+    order = shuffle(taken); bagArts = shuffle(['der','die','das']); tries++;
+    var col=0,row=0; order.forEach((w,i)=>{ const b=bagArts.indexOf(w.definiteArticle); if(i%3===b) col++; if(Math.floor(i/3)===b) row++; });
+  } while(tries<400 && (col>(order.length<=3?0:1) || row>1));
+  const skins = shuffle(SKINS).slice(0,3);
+  return { kind:'pack', set:'def', ids:order.map(w=>w.id), bags:bagArts.map((art,i)=>({art,skin:skins[i]})) };
+}
+function planMatch(R, level){
+  const pool = poolFor(level);
+  const n = level==='leicht' ? 3 : level==='mittel' ? 4 : 5;
+  const set = (level!=='leicht' && Math.random()<0.4) ? 'indef' : 'def';
+  let gs;
+  if(set==='def') gs = genderMix(R,pool,n);
+  else { const rem = remainingByGender(R,pool); const share = rem.f/Math.max(1,rem.f+rem.m+rem.n); const nf = Math.max(1,Math.min(n-1,Math.round(n*share+(Math.random()-.5)))); const mn=[]; for(let i=0;i<n-nf;i++){ const cm=mn.filter(x=>x==='m').length, cn=mn.length-cm; mn.push((rem.m-cm+Math.random()*1.5) >= (rem.n-cn+Math.random()*1.5) ? 'm' : 'n'); } gs = shuffle([...Array(nf).fill('f'), ...mn]); }
+  const taken=[]; gs.forEach(g=>taken.push(pickWord(R,pool,g,taken)));
+  endTask(R,taken);
+  const tiles = shuffle(taken.map(w=>artOf(w,set)));
+  const uniq=[...new Set(tiles)], sk=shuffle(SKINS), skinOf=Object.fromEntries(uniq.map((a,i)=>[a,sk[i%sk.length]]));
+  return { kind:'match', set, ids:shuffle(taken).map(w=>w.id), tiles:tiles.map(art=>({art,skin:skinOf[art]})) };
+}
+function planMissing(R, level, g){
+  const pool = poolFor(level);
+  const set = (R.indefTasks<3 && Math.random()<0.4) ? 'indef' : 'def';
+  let w;
+  if(set==='indef'){ R.indefTasks++; const grp = chooseEinGroup(R); w = pickWord(R,pool,null,[],x=>!x.noIndef && (grp==='f' ? x.g==='f' : x.g!=='f')); noteEin(R,w); }
+  else w = pickWord(R,pool,g,[]);
+  endTask(R,[w]);
+  const tpl = chooseTemplate(R,w);
+  const arts = set==='indef' ? ['ein','eine'] : ['der','die','das'];
+  return { kind:'missing', set, ids:[w.id], tpl, options:layoutOptions(R, arts, artOf(w,set)) };
+}
+function chooseEinGroup(R){ const c=R.einCount; if(c.f<c.mn) return 'f'; if(c.f>c.mn) return 'mn'; return pick(['f','mn']); }
+function noteEin(R,w){ if(w.g==='f') R.einCount.f++; else { R.einCount.mn++; R.einCount[w.g]++; } }
+function planEin(R, level){
+  const pool = poolFor(level);
+  const grp = chooseEinGroup(R);
+  let g = null;
+  if(grp==='f') g='f'; else g = R.einCount.m<=R.einCount.n ? 'm' : 'n';
+  const w = pickWord(R,pool,g,[]);
+  noteEin(R,w); endTask(R,[w]);
+  return { kind:'ein', set:'indef', ids:[w.id], options:layoutOptions(R, ['ein','eine'], w.indefiniteArticle) };
+}
+
+/* ===== Aufgabenfolge ===== */
+const MODE_KIND = { fork:'fork', pack:'pack', match:'match', missing:'missing', ein:'ein' };
+function mixedKinds(level){
+  const all = level==='leicht' ? ['fork','pack','match'] : ['fork','pack','match','missing','ein'];
+  for(let tries=0;tries<500;tries++){
+    let seq;
+    if(level==='leicht'){
+      seq = ['fork','fork','fork','pack','pack','match','match', pick(['fork','pack','match','ein'])];
+    } else {
+      seq = [...all, ...Array.from({length:3},()=>pick(all))];
+    }
+    seq = shuffle(seq);
+    if(seq.every((k,i)=>i===0||k!==seq[i-1])) return seq;
+  }
+  return ['fork','pack','match','fork','pack','match','fork','pack'];
+}
+function makeRound(mode, level){
+  const R = newRoundState();
+  const kinds = mode==='mixed' ? mixedKinds(level) : Array(ROUND_TARGET).fill(MODE_KIND[mode]);
+  // Genus-Reihenfolge für Einzelaufgaben (der/die/das): ausgewogen
+  const singles = kinds.filter(k=>k==='fork'||k==='missing').length;
+  const q = []; for(let i=0;i<Math.floor(singles/3);i++) q.push(...GENDERS);
+  while(q.length<singles){ const rest = GENDERS.filter(g=>q.filter(x=>x===g).length < Math.ceil(singles/3)); q.push(pick(rest.length?rest:GENDERS)); }
+  R.gq = shuffle(q);
+  const tasks = kinds.map(k=>{
+    if(k==='fork') return planFork(R,level,R.gq.pop());
+    if(k==='pack') return planPack(R,level);
+    if(k==='match') return planMatch(R,level);
+    if(k==='missing') return planMissing(R,level,R.gq.pop());
+    return planEin(R,level);
+  });
+  return { mode, level, tasks, repeats:R.repeats };
+}
+/* Lösung einer Aufgabe (nur für Tests/Prüfungen) */
+function solutionOf(task){
+  return task.ids.map(id=>{ const w=WORD_BY_ID[id]; return { id, art:artOf(w,task.set), phrase:phraseOf(w,task.set) }; });
+}
+/* ===== Oberfläche ===== */
+const $ = id => document.getElementById(id);
+function el(tag, cls, html){ const e=document.createElement(tag); if(cls) e.className=cls; if(html!==undefined) e.innerHTML=html; return e; }
+const state = { mode:null, level:null, sound:true, plan:null, idx:0, progress:0, task:null, locked:false, wrong:0, advanceTimer:null };
+let timers=[]; function after(ms,fn){ const id=setTimeout(()=>{ timers=timers.filter(t=>t!==id); try{ fn(); }catch(e){ state.locked=false; } },ms); timers.push(id); return id; }
+function clearTimers(){ timers.forEach(clearTimeout); timers=[]; }
+
+/* ---- Sprachausgabe (SpeechSynthesis, de-DE). Das Spiel funktioniert auch ohne. ---- */
+let voices=[];
+function loadVoices(){ try{ voices = window.speechSynthesis.getVoices()||[]; }catch(e){ voices=[]; } }
+function speechOk(){ try{ return 'speechSynthesis' in window && typeof window.SpeechSynthesisUtterance!=='undefined' && !!window.speechSynthesis; }catch(e){ return false; } }
+function soundActive(){ return state.sound && speechOk(); }
+function mkUtter(text){ const u=new SpeechSynthesisUtterance(text); u.lang='de-DE'; u.rate=.85; u.pitch=1; const v=voices.find(v=>/^de[-_]/i.test(v.lang)) || voices.find(v=>/^de/i.test(v.lang)); if(v) u.voice=v; return u; }
+function say(text){ if(!soundActive()) return; try{ const s=window.speechSynthesis; s.cancel(); s.speak(mkUtter(text)); }catch(e){} }
+function sayList(list){ if(!soundActive()) return; try{ const s=window.speechSynthesis; s.cancel(); list.forEach(t=>s.speak(mkUtter(t))); }catch(e){} }
+function stopSay(){ try{ if(speechOk()) window.speechSynthesis.cancel(); }catch(e){} }
+if(speechOk()){ loadVoices(); try{ window.speechSynthesis.addEventListener('voiceschanged',loadVoices); }catch(e){} }
+
+const SPEAKER = `<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M6,18 H16 L28,8 V40 L16,30 H6Z" fill="currentColor"/><path class="wave" d="M33,17 Q39,24 33,31 M38,11 Q48,24 38,37" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/><path class="slash" d="M6,6 L44,44" stroke="currentColor" stroke-width="4.6" stroke-linecap="round"/></svg>`;
+function updateSoundButtons(){
+  ['btn-sound','btn-sound2'].forEach(id=>{
+    const b=$(id); b.innerHTML=SPEAKER; b.setAttribute('aria-pressed', String(state.sound));
+    b.setAttribute('aria-label', state.sound ? 'Sprachausgabe ist an. Zum Ausschalten drücken.' : 'Sprachausgabe ist aus. Zum Einschalten drücken.');
+    b.title = state.sound ? 'Sprachausgabe an' : 'Sprachausgabe aus';
+  });
+}
+function toggleSound(){ state.sound=!state.sound; if(!state.sound) stopSay(); updateSoundButtons(); if(!$('screen-game').hidden && state.task && !state.locked){ const t=state.task; /* Hilfen neu aufbauen, falls Wörter jetzt sichtbar sein müssen */ rerenderTask(); } }
+
+/* ---- Texte ---- */
+const GOOD = ['Super!','Toll gemacht!','Richtig!','Prima!','Klasse!'];
+const HINTS = {
+  fork:   ['Hör dir das Wort noch einmal an.','Welcher Artikel gehört dazu?','Probiere es noch einmal.'],
+  pack:   ['Dieser Artikel passt nicht. Probiere es noch einmal.','Welcher Artikel gehört zu diesem Wort?','Schau noch einmal genau hin.'],
+  match:  ['Das passt noch nicht zusammen. Probiere es noch einmal.','Welcher Artikel gehört zu diesem Wort?','Schau noch einmal genau hin.'],
+  missing:['Lies den Satz noch einmal.','Welcher Artikel passt in die Lücke?','Probiere es noch einmal.'],
+  ein:    ['Hör dir das Wort noch einmal an.','Ein oder eine – was passt?','Probiere es noch einmal.']
+};
+const HINTS_NOSOUND = { fork:['Schau dir das Wort noch einmal an.','Welcher Artikel gehört dazu?','Probiere es noch einmal.'], ein:['Schau dir das Wort noch einmal an.','Ein oder eine – was passt?','Probiere es noch einmal.'] };
+function hintFor(kind){ const set = (!soundActive() && HINTS_NOSOUND[kind]) ? HINTS_NOSOUND[kind] : HINTS[kind]; return set[(state.wrong-1) % set.length]; }
+
+/* ---- Modi ---- */
+const MODES = [
+  { key:'fork',    title:'Der, die oder das?',   place:'Weggabelung',          skin:'sk3', art:()=>artSvg('wegweiser') , name:'Weggabelung' },
+  { key:'pack',    title:'Pack den Rucksack!',   place:'Entdeckercamp',        skin:'sk1', art:()=>campArt(), name:'Entdeckercamp' },
+  { key:'match',   title:'Was gehört zusammen?', place:'Alte Brücke',          skin:'sk2', art:()=>artSvg('bruecke'), name:'Alte Brücke' },
+  { key:'missing', title:'Welcher Artikel fehlt?', place:'Höhle (ab Mittel)',  skin:'sk4', art:()=>artSvg('hoehle'), name:'Höhle' },
+  { key:'ein',     title:'Ein oder eine?',       place:'Schatzkammer',         skin:'sk0', art:()=>artSvg('kammer'), name:'Schatzkammer' },
+  { key:'mixed',   title:'Gemischt',             place:'Die große Schatzsuche',skin:'sk1', art:()=>artSvg('karte'), name:'Große Schatzsuche' }
+];
+const modeByKey = k => MODES.find(m=>m.key===k);
+const LEVELS = [
+  { key:'leicht', label:'Leicht',  desc:'Bild, Wort und Ton', n:1, skin:'sk1' },
+  { key:'mittel', label:'Mittel',  desc:'Bild und Wort',             n:2, skin:'sk3' },
+  { key:'schwer', label:'Schwer',  desc:'Mehr Wörter, weniger Hilfe', n:3, skin:'sk0' }
+];
+function campArt(){ return `<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><g transform="translate(-2,0) scale(.86)">${ART.zelt}</g><g transform="translate(50,44) scale(.5)">${ART.rucksack}</g></svg>`; }
+
+function sceneryFor(key){
+  const item={fork:'wegweiser',pack:'zelt',match:'bruecke',missing:'hoehle',ein:'kammer',mixed:'karte'}[key];
+  const inner = item==='zelt' ? ART.zelt : (SCENE_ART[item]||'');
+  return `<svg viewBox="0 0 800 100" preserveAspectRatio="xMidYMax slice" focusable="false" aria-hidden="true"><path d="M0,100 V58 Q100,24 210,54 T430,50 T640,56 T800,40 V100Z" fill="#e9dcc0" opacity=".75"/><path d="M0,100 V76 Q120,52 260,76 T520,72 T800,70 V100Z" fill="#dfe8d3" opacity=".9"/><g transform="translate(18,6) scale(.9)">${inner}</g><g transform="translate(690,30) scale(.62)">${SCENE_ART.baumchen}</g><g transform="translate(740,44) scale(.46)">${SCENE_ART.baumchen}</g><g transform="translate(560,50) scale(.4)">${ART.blume}</g></svg>`;
+}
+function showScreen(name){ ['start','sub','game','end'].forEach(n=>{ $('screen-'+n).hidden = n!==name; }); window.scrollTo(0,0); }
+
+/* ---- Start ---- */
+function buildBanner(){
+  $('banner').innerHTML = `<svg viewBox="0 0 800 100" preserveAspectRatio="xMidYMid slice" focusable="false" aria-hidden="true"><path d="M0,100 L0,60 Q60,30 120,62 T250,58 T380,64 T520,56 T660,62 T800,52 V100Z" fill="#e9dcc0"/><path d="M0,100 L0,78 Q80,58 160,80 T330,76 T500,80 T680,74 T800,80 V100Z" fill="#dfe8d3"/><g transform="translate(640,18) scale(.55)">${ART.berg}</g><g transform="translate(700,34) scale(.4)">${SCENE_ART.baumchen}</g><g transform="translate(560,40) scale(.34)">${SCENE_ART.baumchen}</g><path d="M30,92 C120,70 200,96 290,76 S470,70 540,84" stroke="#c99a6c" stroke-width="5" stroke-dasharray="2 9" fill="none" stroke-linecap="round" opacity=".7"/></svg>`;
+}
+function buildFoot(){
+  const g=(inner,x,y,s)=>`<g transform="translate(${x},${y}) scale(${s})">${inner}</g>`;
+  $('start-foot').innerHTML=`<svg viewBox="0 0 1600 140" preserveAspectRatio="xMidYMax slice" focusable="false" aria-hidden="true"><path d="M0,140 V78 Q140,44 300,74 T620,68 T940,76 T1280,64 T1600,70 V140Z" fill="#e9dcc0"/>${g(ART.berg,150,22,.9)}${g(ART.berg,1080,28,.8)}${g(SCENE_ART.baumchen,420,50,.62)}${g(SCENE_ART.baumchen,468,62,.46)}${g(SCENE_ART.baumchen,1330,46,.66)}${g(SCENE_ART.baumchen,1384,62,.48)}${g(SCENE_ART.baumchen,60,60,.5)}<path d="M0,140 V108 Q220,84 480,108 T1000,104 T1600,100 V140Z" fill="#dfe8d3"/><path d="M80,132 C400,112 600,138 860,118 S1300,112 1540,126" stroke="#c99a6c" stroke-width="5" stroke-dasharray="2 9" fill="none" stroke-linecap="round" opacity=".7"/>${g(ART.zelt,700,58,.62)}${g(ART.rucksack,770,86,.3)}${g(ART.blume,260,86,.34)}${g(ART.blume,560,94,.3)}${g(ART.blume,980,88,.34)}${g(ART.blume,1220,94,.3)}</svg>`;
+}
+function buildStart(){
+  buildFoot();
+  const g=$('mode-grid'); g.innerHTML='';
+  MODES.forEach(m=>{
+    const b=el('button','mode-card '+m.skin); b.type='button'; b.dataset.mode=m.key;
+    b.innerHTML = `<span class="mc-art">${m.art()}</span><span class="mc-txt"><span class="mc-title">${m.title}</span><span class="mc-place">${m.place}</span></span>`;
+    b.addEventListener('click',()=>onMode(m.key));
+    g.appendChild(b);
+  });
+}
+function onMode(key){
+  state.mode=key; const m=modeByKey(key);
+  $('sub-title').textContent = m.title;
+  $('sub-hint').textContent = key==='missing' ? 'Dieses Spiel gibt es ab Mittel. Wie schwer soll es sein?' : 'Wie schwer soll dein Abenteuer sein?';
+  const box=$('sub-choices'); box.innerHTML='';
+  LEVELS.filter(l=>!(key==='missing'&&l.key==='leicht')).forEach(l=>{
+    const b=el('button','level-card '+l.skin); b.type='button'; b.dataset.level=l.key;
+    b.innerHTML = `<span class="lv-icons" aria-hidden="true">${Array.from({length:l.n},()=>artSvg('kompass')).join('')}</span><span><span class="lv-name">${l.label}</span><span class="lv-desc">${l.desc}</span></span>`;
+    b.addEventListener('click',()=>startGame(key,l.key));
+    box.appendChild(b);
+  });
+  showScreen('sub');
+  const f=box.querySelector('button'); if(f) f.focus({preventScroll:true});
+}
+
+/* ---- Karte (Fortschritt) ---- */
+const MAP = { W:0, H:0, pts:[], legs:[], pos:0, raf:0 };
+function buildMap(){
+  const box=$('mapstrip'); const W=Math.max(200,box.clientWidth), H=Math.max(40,box.clientHeight);
+  MAP.W=W; MAP.H=H;
+  const padL=Math.max(26,H*.62), padR=Math.max(30,H*.7), n=ROUND_TARGET, amp=H*.17, mid=H*.5;
+  MAP.pts = Array.from({length:n+1},(_,i)=>({ x: padL+(W-padL-padR)*i/n, y: i===0||i===n ? mid+H*.12 : mid+(i%2?-amp:amp) }));
+  let legs='', dots='', deco='';
+  MAP.legs=[];
+  for(let i=1;i<=n;i++){
+    const a=MAP.pts[i-1], b=MAP.pts[i], dx=b.x-a.x;
+    legs += `<path class="leg" data-i="${i}" d="M${a.x.toFixed(1)},${a.y.toFixed(1)} C${(a.x+dx*.5).toFixed(1)},${a.y.toFixed(1)} ${(b.x-dx*.5).toFixed(1)},${b.y.toFixed(1)} ${b.x.toFixed(1)},${b.y.toFixed(1)}" fill="none" stroke="#e4c88e" stroke-width="${(H*.2).toFixed(1)}" stroke-linecap="round"/>`;
+  }
+  let dash=''; for(let i=1;i<=n;i++){ const a=MAP.pts[i-1], b=MAP.pts[i], dx=b.x-a.x; dash += `<path d="M${a.x.toFixed(1)},${a.y.toFixed(1)} C${(a.x+dx*.5).toFixed(1)},${a.y.toFixed(1)} ${(b.x-dx*.5).toFixed(1)},${b.y.toFixed(1)} ${b.x.toFixed(1)},${b.y.toFixed(1)}" fill="none" stroke="#a97a4d" stroke-width="2" stroke-dasharray="1 7" stroke-linecap="round"/>`; }
+  // Dekoration: Hügel, Bäume, Berg, Fluss
+  deco += `<path d="M0,${H} L0,${H*.62} Q${W*.1},${H*.4} ${W*.22},${H*.62} T${W*.45},${H*.6} T${W*.7},${H*.64} T${W},${H*.55} V${H}Z" fill="#e8dcba" opacity=".8"/>`;
+  const ts=H*.5; [[.16,.12],[.34,.78],[.58,.1],[.8,.8]].forEach(([fx,fy])=>{ deco += `<svg x="${(W*fx).toFixed(1)}" y="${(H*fy-ts*.5).toFixed(1)}" width="${ts.toFixed(1)}" height="${ts.toFixed(1)}" viewBox="0 0 100 100" opacity=".85">${SCENE_ART.baumchen}</svg>`; });
+  const sz=H*.62;
+  const camp=`<svg x="${(MAP.pts[0].x-sz*.5).toFixed(1)}" y="${(MAP.pts[0].y-sz*.8).toFixed(1)}" width="${sz.toFixed(1)}" height="${sz.toFixed(1)}" viewBox="0 0 100 100">${ART.zelt}</svg>`;
+  const cs=H*.8; const chest=`<svg x="${(MAP.pts[n].x-cs*.5).toFixed(1)}" y="${(MAP.pts[n].y-cs*.72).toFixed(1)}" width="${cs.toFixed(1)}" height="${cs.toFixed(1)}" viewBox="0 0 100 100">${ART.schatztruhe}</svg>`;
+  for(let i=1;i<n;i++){ const p=MAP.pts[i], r=Math.min(H*.17,12); dots += `<g class="st" data-i="${i}"><circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r.toFixed(1)}" fill="#fffaf0" stroke="#b45e39" stroke-width="2.5"/><text x="${p.x.toFixed(1)}" y="${(p.y+r*.38).toFixed(1)}" text-anchor="middle" font-size="${(r*1.05).toFixed(1)}" font-weight="800" fill="#3a3226" font-family="Trebuchet MS,Segoe UI,sans-serif">${i}</text></g>`; }
+  const ms=H*.7;
+  box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true" focusable="false">${deco}${legs}${dash}${camp}${dots}${chest}<g id="mk" style="transform:translate(0px,0px)"><svg x="${(-ms*.5).toFixed(1)}" y="${(-ms*.88).toFixed(1)}" width="${ms.toFixed(1)}" height="${ms.toFixed(1)}" viewBox="0 0 100 100">${explorerSvgInner()}</svg></g></svg>`;
+  MAP.legsEls=[...box.querySelectorAll('path.leg')];
+  placeMarker(state.progress,false); markDone();
+}
+function markDone(){ document.querySelectorAll('#mapstrip .st').forEach(g=>{ const i=+g.dataset.i; const c=g.querySelector('circle'); c.setAttribute('fill', i<=state.progress ? '#eec14a' : '#fffaf0'); }); }
+function prefersReduced(){ try{ return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } }
+function setMk(x,y){ const mk=$('mk'); if(mk) mk.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`; }
+function placeMarker(i,animate){
+  cancelAnimationFrame(MAP.raf);
+  const to=MAP.pts[i]; if(!to) return;
+  if(!animate || i<=0 || prefersReduced()){ setMk(to.x,to.y); MAP.pos=i; return; }
+  const leg=MAP.legsEls[i-1]; if(!leg){ setMk(to.x,to.y); return; }
+  const len=leg.getTotalLength(), t0=performance.now(), dur=750;
+  const step=now=>{ let t=Math.min(1,(now-t0)/dur); const e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2; const p=leg.getPointAtLength(len*e); setMk(p.x,p.y); if(t<1) MAP.raf=requestAnimationFrame(step); else { setMk(to.x,to.y); } };
+  MAP.raf=requestAnimationFrame(step); MAP.pos=i;
+}
+function progressTo(n){ state.progress=n; placeMarker(n,true); markDone(); $('progress-live').textContent = n>=ROUND_TARGET ? 'Schatz erreicht!' : `Station ${n} von ${ROUND_TARGET}`; $('mapstrip').setAttribute('aria-label', n>=ROUND_TARGET ? 'Abenteuerkarte: Schatz erreicht' : `Abenteuerkarte: Station ${n} von ${ROUND_TARGET}`); }
+
+/* ---- Spielablauf ---- */
+function startGame(mode,level){
+  clearTimers(); stopSay();
+  state.mode=mode; state.level=level;
+  const m=modeByKey(mode), L=LEVELS.find(l=>l.key===level);
+  $('g-title').innerHTML = `${m.title}<small>${m.name} • ${L.label}</small>`;
+  showScreen('game'); $('scenery').innerHTML=sceneryFor(mode);
+  state.progress=0;
+  buildMap();
+  progressTo(0);
+  startRound(false);
+}
+function startRound(){
+  clearTimers(); stopSay();
+  state.plan = makeRound(state.mode, state.level);
+  state.idx=0; state.progress=0; markDone(); placeMarker(0,false);
+  $('mapstrip').setAttribute('aria-label','Abenteuerkarte: Station 0 von '+ROUND_TARGET);
+  showTask();
+}
+function showTask(){
+  state.locked=false; state.wrong=0; clearTimers();
+  const t=state.plan.tasks[state.idx]; state.task=t;
+  renderTask(true);
+}
+function rerenderTask(){ renderTask(false); }
+const RENDER = {};
+function renderTask(fresh){
+  const st=$('stage'); st.innerHTML=''; st.className='stage'; state.nextBtn=null;
+  RENDER[state.task.kind](state.task, st, fresh);
+  st.scrollTop=0;
+  const first = st.querySelector('.opt,.pcard,.mcard');
+  const a=document.activeElement; if(first && (a===document.body || !a)){ try{ first.focus({preventScroll:true}); }catch(e){} }
+}
+function showFb(msg,good){ const f=$('fb'); if(!f) return; f.textContent=msg; f.classList.toggle('good',!!good); f.classList.add('show'); }
+function mkFb(){ const f=el('div','fb'); f.id='fb'; f.setAttribute('role','status'); f.setAttribute('aria-live','polite'); return f; }
+function pane(cls){ return el('div','pane '+(cls||'')); }
+function mkSpk(text, label){ const b=el('button','spk'); b.type='button'; b.setAttribute('aria-label',label||'Wort anhören'); b.innerHTML=SPEAKER.replace('class="slash"','class="slash" style="display:none"'); b.addEventListener('click',()=>say(text)); return b; }
+function shake(e){ e.classList.remove('shake'); void e.offsetWidth; e.classList.add('shake'); after(450,()=>e.classList.remove('shake')); }
+const comboHtml = (w,set) => `<span class="ln">${artOf(w,set).toUpperCase()} ${w.word.toUpperCase()}</span>`;
+
+/* Aufgabe gelöst: Fortschritt, Weiter-Knopf, automatischer Übergang */
+function solved(delayMs, host){
+  state.locked=true; $('stage').classList.add('solved');
+  const n = state.progress+1; progressTo(n);
+  const last = n>=ROUND_TARGET;
+  const nb = el('button','nextbtn', last ? 'Zum Schatz!' : 'Weiter'); nb.type='button'; nb.id='btn-next';
+  nb.addEventListener('click',()=>advance());
+  host.appendChild(nb); state.nextBtn=nb;
+  try{ nb.focus({preventScroll:true}); }catch(e){}
+  clearTimers(); state.advanceTimer = after(delayMs||3400, advance);
+}
+function advance(){
+  clearTimers(); stopSay();
+  if(state.progress>=ROUND_TARGET){ endRound(); return; }
+  state.idx++; showTask();
+}
+function endRound(){
+  clearTimers(); stopSay(); state.locked=true;
+  $('end-art').innerHTML = END_SCENE();
+  showScreen('end');
+  const b=$('btn-again'); try{ b.focus({preventScroll:true}); }catch(e){}
+  if(soundActive()) say('Abenteuer geschafft!');
+}
+function END_SCENE(){
+  const g=(art,x,y,s,extra)=>`<g transform="translate(${x},${y}) scale(${s})"${extra||''}>${art}</g>`;
+  const sp=(x,y,s)=>`<g class="sparkle">${g(SCENE_ART.funke,x,y,s)}</g>`;
+  return `<svg viewBox="0 0 520 260" aria-hidden="true" focusable="false"><path d="M0,260 V170 Q70,120 150,172 T300,168 T450,160 T520,150 V260Z" fill="#e3ead6"/><path d="M0,260 V205 Q90,175 180,208 T360,204 T520,196 V260Z" fill="#d7e2c6"/>${g(ART.berg,10,40,1.6)}${g(SCENE_ART.baumchen,420,90,1.1)}${g(SCENE_ART.baumchen,456,114,.8)}${g(SCENE_ART.kammer,170,36,1.8)}${sp(150,34,.4)}${sp(340,24,.5)}${sp(378,98,.34)}${sp(120,110,.3)}${sp(260,10,.34)}<g class="hop">${g(explorerSvgInner(),60,120,1.05)}</g><g class="hop" style="animation-delay:.35s">${g(explorerSvgInner({hat:'#8fb9c9',hatD:'#5f8ea2',shirt:'#8fa888',shirtD:'#6f8a68',hair:'#3a3226',skin:'#d9a878'}),340,126,1.05)}</g></svg>`;
+}
+
+/* ================= Modus 1: Der, die oder das? (Weggabelung) ================= */
+function wordVisible(){ return true; }  /* Wort steht immer da – auch wenn es gehört wird (Spielen ohne Ton) */
+function buildOptions(t, onPick){
+  const box=el('div','opts n'+t.options.length); box.setAttribute('role','group'); box.setAttribute('aria-label','Antworten');
+  t.options.forEach(o=>{ const b=el('button','opt '+o.skin, o.art.toUpperCase()); b.type='button'; b.dataset.art=o.art; b.addEventListener('click',()=>onPick(b,o.art)); box.appendChild(b); });
+  return box;
+}
+function pictureColumn(w, st, opts){
+  const L=pane('pane-l');
+  const pb=el('div','picbox'); pb.id='picbox';
+  if(opts.hidePic){ pb.classList.add('blank'); pb.innerHTML=`<span class="bigword" style="font-weight:800;font-size:calc(var(--pic)*.2);text-align:center;overflow-wrap:anywhere;padding:0 6px">${w.word}</span>`; }
+  else pb.innerHTML = artSvg(w.illustration);
+  L.appendChild(pb);
+  const row=el('div','picrow'); row.appendChild(mkSpk(w.word,'Wort anhören'));
+  const tag=el('div','wordtag'); tag.id='wordtag'; if(opts.showWord && !opts.hidePic) tag.textContent=w.word; row.appendChild(tag);
+  L.appendChild(row);
+  st.appendChild(L);
+  return L;
+}
+function revealPicture(w){ const pb=$('picbox'); if(!pb) return; pb.classList.remove('blank'); pb.innerHTML=artSvg(w.illustration); }
+RENDER.fork = function(t, st, fresh){
+  const w=WORD_BY_ID[t.ids[0]], correct=w.definiteArticle;
+  pictureColumn(w, st, { showWord:wordVisible(), hidePic: state.level==='schwer' });
+  const R=pane('pane-r');
+  const p=el('p','prompt','Der, die oder das?'); R.appendChild(p);
+  const box=buildOptions(t,(b,art)=>{
+    if(state.locked) return;
+    if(art===correct){
+      box.querySelectorAll('.opt').forEach(x=>{ x.disabled=true; if(x!==b) x.classList.add('dim'); }); b.classList.add('good');
+      revealPicture(w); const tag=$('wordtag'); if(tag) tag.textContent='';
+      const c=$('combo'); c.innerHTML=comboHtml(w,'def'); c.classList.add('pop');
+      showFb(pick(GOOD),true); say(phraseOf(w,'def'));
+      solved(3600,R);
+    } else { state.wrong++; shake(b); showFb(hintFor('fork'),false); if(state.wrong===1) say(w.word); }
+  });
+  R.appendChild(box);
+  R.appendChild(mkFb()); const c=el('div','combo'); c.id='combo'; R.appendChild(c);
+  st.appendChild(R);
+  if(fresh) say(w.word);
+};
+
+/* ================= Modus 5: Ein oder eine? (Schatzkammer) ================= */
+RENDER.ein = function(t, st, fresh){
+  st.classList.add('k-sent');
+  const w=WORD_BY_ID[t.ids[0]], correct=w.indefiniteArticle;
+  if(state.level==='schwer'){
+    const L=pane('pane-l');
+    const d=el('div','defcard'); d.id='defcard';
+    d.innerHTML=`<span>${w.definiteArticle.toUpperCase()} ${w.word.toUpperCase()}</span><span class="arr" aria-hidden="true">↓</span><span><span class="blank" id="einblank">&nbsp;&nbsp;&nbsp;</span> ${w.word.toUpperCase()}</span>`;
+    L.appendChild(d);
+    const row=el('div','picrow'); row.appendChild(mkSpk(w.word,'Wort anhören')); L.appendChild(row);
+    st.appendChild(L);
+  } else pictureColumn(w, st, { showWord:wordVisible(), hidePic:false });
+  const R=pane('pane-r');
+  R.appendChild(el('p','prompt','Ein oder eine?'));
+  const box=buildOptions(t,(b,art)=>{
+    if(state.locked) return;
+    if(art===correct){
+      box.querySelectorAll('.opt').forEach(x=>{ x.disabled=true; if(x!==b) x.classList.add('dim'); }); b.classList.add('good');
+      const bl=$('einblank'); if(bl) bl.textContent=art.toUpperCase();
+      const tag=$('wordtag'); if(tag) tag.textContent='';
+      const c=$('combo'); if(state.level==='schwer'){ c.style.display='none'; const d=$('defcard'); d.querySelector('.blank').style.borderBottomColor='#3f7a3a'; } else c.innerHTML=`<span class="ln">${w.definiteArticle.toUpperCase()} ${w.word.toUpperCase()}</span><span class="arr" aria-hidden="true">↓</span><span class="ln">${w.indefiniteArticle.toUpperCase()} ${w.word.toUpperCase()}</span>`; c.classList.add('pop');
+      showFb(pick(GOOD),true); say(phraseOf(w,'indef'));
+      solved(3800,R);
+    } else { state.wrong++; shake(b); showFb(hintFor('ein'),false); if(state.wrong===1) say(w.word); }
+  });
+  R.appendChild(box); R.appendChild(mkFb()); const c=el('div','combo'); c.id='combo'; R.appendChild(c);
+  st.appendChild(R);
+  if(fresh) say(w.word);
+};
+
+/* ================= Modus 4: Welcher Artikel fehlt? (Höhle) ================= */
+RENDER.missing = function(t, st, fresh){
+  st.classList.add('k-sent','k-missing');
+  const w=WORD_BY_ID[t.ids[0]], correct=artOf(w,t.set);
+  const L=pane('pane-l');
+  const pb=el('div','picbox'+(state.level==='schwer'?' blank':'')); pb.id='picbox';
+  pb.innerHTML = state.level==='schwer' ? artSvg('ruine') : artSvg(w.illustration);
+  L.appendChild(pb);
+  const row=el('div','picrow'); row.appendChild(mkSpk(w.word,'Wort anhören')); L.appendChild(row);
+  st.appendChild(L);
+  const R=pane('pane-r');
+  R.appendChild(el('p','prompt', t.set==='indef' ? 'Ein oder eine – was fehlt?' : 'Der, die oder das – was fehlt?'));
+  const s=el('p','sentence'); s.id='sentence';
+  const pre = t.tpl.pre ? `${t.tpl.pre} ` : '';
+  s.innerHTML = `${pre}<span class="gap" id="gap" aria-label="Lücke">&nbsp;</span> ${t.tpl.post}`;
+  R.appendChild(s);
+  const box=buildOptions(t,(b,art)=>{
+    if(state.locked) return;
+    if(art===correct){
+      box.querySelectorAll('.opt').forEach(x=>{ x.disabled=true; if(x!==b) x.classList.add('dim'); }); b.classList.add('good');
+      const g=$('gap'); g.textContent = t.tpl.pre ? art : cap(art); g.classList.add('filled');
+      if(state.level==='schwer') revealPicture(w);
+      const c=$('combo'); c.innerHTML=comboHtml(w,t.set); c.classList.add('pop');
+      showFb(pick(GOOD),true); say(phraseOf(w,t.set));
+      solved(4000,R);
+    } else { state.wrong++; shake(b); showFb(hintFor('missing'),false); }
+  });
+  R.appendChild(box); R.appendChild(mkFb()); const c=el('div','combo'); c.id='combo'; R.appendChild(c);
+  st.appendChild(R);
+};
+
+/* ================= Modus 2: Pack den Rucksack! (Entdeckercamp) ================= */
+RENDER.pack = function(t, st, fresh){
+  const words=t.ids.map(id=>WORD_BY_ID[id]);
+  const showW = wordVisible();
+  st.classList.add('k-pack');
+  const L=el('div','blk a-tray pane-pack');
+  L.appendChild(el('p','prompt','Pack den Rucksack!'));
+  const tray=el('div','tray'); tray.id='tray'; tray.setAttribute('role','group'); tray.setAttribute('aria-label','Karten');
+  const R=el('div','blk a-bags pane-pack'), F=el('div','blk a-foot');
+  const bagsBox=el('div','bags'); bagsBox.setAttribute('role','group'); bagsBox.setAttribute('aria-label','Rucksäcke');
+  let selected=null, placed=0;
+  const bagEls={};
+  t.bags.forEach(bg=>{
+    const b=el('button','bag '+bg.skin); b.type='button'; b.dataset.art=bg.art; b.setAttribute('aria-label','Rucksack '+bg.art);
+    b.innerHTML=`<span class="bag-lab">${bg.art.toUpperCase()}</span><span class="bag-in"></span>`;
+    b.addEventListener('click',()=>{ if(selected) tryPlace(selected,b); });
+    bagsBox.appendChild(b); bagEls[bg.art]=b;
+  });
+  function deselect(){ if(selected){ selected.classList.remove('sel'); selected.setAttribute('aria-pressed','false'); selected=null; } }
+  function select(card){
+    if(state.locked||card.classList.contains('placed')) return;
+    if(selected===card){ deselect(); return; }
+    deselect(); selected=card; card.classList.add('sel'); card.setAttribute('aria-pressed','true');
+    say(WORD_BY_ID[card.dataset.id].word);
+  }
+  function tryPlace(card,bag){
+    if(state.locked||card.classList.contains('placed')) return;
+    const w=WORD_BY_ID[card.dataset.id];
+    if(w.definiteArticle===bag.dataset.art){
+      const mini=el('span','mini'); mini.dataset.id=w.id;
+      mini.innerHTML=artSvg(w.illustration)+`<span class="t">${showW?w.word:''}</span>`;
+      bag.querySelector('.bag-in').appendChild(mini);
+      card.classList.add('placed'); card.disabled=true; card.style.visibility='hidden'; card.classList.remove('sel'); selected=null; placed++;
+      if(placed===words.length) finish(); else showFb('Passt!',true);
+    } else {
+      state.wrong++; shake(bag); shake(card); deselect(); showFb(hintFor('pack'),false);
+    }
+  }
+  function finish(){
+    state.locked=true;
+    // vollständige Kombinationen anzeigen (und nacheinander sprechen)
+    const order=t.bags.map(b=>b.art);
+    const list=[];
+    order.forEach(art=>{ bagEls[art].querySelectorAll('.mini').forEach(m=>{ const w=WORD_BY_ID[m.dataset.id]; m.querySelector('.t').textContent=phraseOf(w,'def').toUpperCase(); list.push(phraseOf(w,'def')); }); });
+    st.querySelectorAll('.bag').forEach(b=>b.disabled=true);
+    showFb(pick(GOOD),true);
+    sayList(list);
+    state.locked=false; solved(2200+list.length*1300,F);
+  }
+  words.forEach(w=>{
+    const c=el('button','pcard'); c.type='button'; c.dataset.id=w.id; c.setAttribute('aria-pressed','false');
+    c.setAttribute('aria-label', w.word);
+    c.innerHTML=artSvg(w.illustration)+`<span class="w">${showW?w.word:'&nbsp;'}</span>`;
+    c.addEventListener('click',()=>{ if(c._dragged){ c._dragged=false; return; } select(c); });
+    attachDrag(c, bag=>tryPlace(c,bag), ()=>select(c), ()=>state.locked||c.classList.contains('placed'), '.bag');
+    tray.appendChild(c);
+  });
+  L.appendChild(tray); st.appendChild(L);
+  R.appendChild(bagsBox); F.appendChild(mkFb());
+  st.appendChild(R); st.appendChild(F);
+};
+/* Ziehen mit Maus/Finger (Zeiger-Ereignisse). Tippen-Alternative läuft über click. */
+function attachDrag(card, onDrop, onStart, isBlocked, targetSel){
+  let start=null, ghost=null, moved=false, over=null;
+  card.addEventListener('pointerdown',e=>{
+    if(isBlocked()) return; if(e.pointerType==='mouse' && e.button!==0) return;
+    start={x:e.clientX,y:e.clientY,id:e.pointerId}; moved=false; card._dragged=false;
+    try{ card.setPointerCapture(e.pointerId); }catch(_){}
+  });
+  card.addEventListener('pointermove',e=>{
+    if(!start||e.pointerId!==start.id) return;
+    const dx=e.clientX-start.x, dy=e.clientY-start.y;
+    if(!moved && Math.hypot(dx,dy)>8){
+      moved=true; ghost=card.cloneNode(true); ghost.classList.add('ghost'); ghost.classList.remove('sel'); ghost.style.width=card.offsetWidth+'px'; ghost.removeAttribute('id'); document.body.appendChild(ghost); card.classList.add('drag-src'); onStart();
+    }
+    if(moved){
+      ghost.style.left=(e.clientX-ghost.offsetWidth/2)+'px'; ghost.style.top=(e.clientY-ghost.offsetHeight/2)+'px';
+      const under=document.elementFromPoint(e.clientX,e.clientY), tg=under&&under.closest?under.closest(targetSel):null;
+      if(over&&over!==tg) over.classList.remove('over'); over=tg; if(tg) tg.classList.add('over');
+    }
+  });
+  const end=e=>{
+    if(!start||e.pointerId!==start.id) return;
+    const wasMoved=moved; start=null; moved=false;
+    if(ghost){ ghost.remove(); ghost=null; } card.classList.remove('drag-src'); if(over){ over.classList.remove('over'); over=null; }
+    if(wasMoved){
+      card._dragged=true; setTimeout(()=>{ card._dragged=false; },60);
+      if(e.type==='pointerup'){ const under=document.elementFromPoint(e.clientX,e.clientY), tg=under&&under.closest?under.closest(targetSel):null; if(tg) onDrop(tg); else { card.classList.remove('sel'); card.setAttribute('aria-pressed','false'); } }
+    }
+  };
+  card.addEventListener('pointerup',end); card.addEventListener('pointercancel',end);
+}
+
+/* ================= Modus 3: Was gehört zusammen? (Alte Brücke) ================= */
+RENDER.match = function(t, st, fresh){
+  const words=t.ids.map(id=>WORD_BY_ID[id]);
+  st.classList.add('k-match');
+  const H=el('div','blk a-head'), C=el('div','blk a-cols'), F=el('div','blk a-foot'), P=H;
+  H.appendChild(el('p','prompt', t.set==='indef' ? 'Ein oder eine – was gehört zusammen?' : 'Was gehört zusammen?'));
+  const br=el('div','bridge'); br.setAttribute('aria-hidden','true'); words.forEach(()=>br.appendChild(el('span','plank'))); H.appendChild(br);
+  const cols=el('div','mcols');
+  const colL=el('div','mcol'), colR=el('div','mcol');
+  let selCard=null, selTile=null, done=0;
+  const lvl=state.level, showPic = lvl!=='schwer', showW = true;
+  words.forEach(w=>{
+    const c=el('button','mcard'); c.type='button'; c.dataset.id=w.id; c.setAttribute('aria-pressed','false');
+    c.setAttribute('aria-label', w.word);
+    c.innerHTML=(showPic?artSvg(w.illustration):'')+((showW||!showPic)?`<span class="w">${w.word}</span>`:'');
+    c.addEventListener('click',()=>{ if(state.locked||c.classList.contains('done')) return; setSel('card',c); });
+    colL.appendChild(c);
+  });
+  t.tiles.forEach((tl,i)=>{
+    const b=el('button','tile '+tl.skin, tl.art.toUpperCase()); b.type='button'; b.dataset.art=tl.art; b.setAttribute('aria-pressed','false');
+    b.addEventListener('click',()=>{ if(state.locked||b.classList.contains('used')) return; setSel('tile',b); });
+    colR.appendChild(b);
+  });
+  function clearSel(){ if(selCard){ selCard.classList.remove('sel'); selCard.setAttribute('aria-pressed','false'); } if(selTile){ selTile.classList.remove('sel'); selTile.setAttribute('aria-pressed','false'); selTile.style.boxShadow=''; } selCard=selTile=null; }
+  function setSel(kind,e){
+    if(kind==='card'){ if(selCard===e){ clearSel(); return; } if(selCard) { selCard.classList.remove('sel'); selCard.setAttribute('aria-pressed','false'); } selCard=e; e.classList.add('sel'); e.setAttribute('aria-pressed','true'); say(WORD_BY_ID[e.dataset.id].word); }
+    else { if(selTile===e){ clearSel(); return; } if(selTile){ selTile.classList.remove('sel'); selTile.setAttribute('aria-pressed','false'); selTile.style.boxShadow=''; } selTile=e; e.classList.add('sel'); e.setAttribute('aria-pressed','true'); e.style.boxShadow='0 0 0 5px rgba(31,95,122,.35)'; }
+    if(selCard&&selTile) check();
+  }
+  function check(){
+    const c=selCard, tl=selTile, w=WORD_BY_ID[c.dataset.id];
+    if(artOf(w,t.set)===tl.dataset.art){
+      c.classList.remove('sel'); c.classList.add('done'); c.disabled=true; c.setAttribute('aria-pressed','false');
+      c.innerHTML=(showPic?artSvg(w.illustration):'')+`<span class="ph">${phraseOf(w,t.set).toUpperCase()}</span>`;
+      tl.classList.remove('sel'); tl.style.boxShadow=''; tl.classList.add('used'); tl.disabled=true; tl.setAttribute('aria-pressed','false');
+      selCard=selTile=null; done++;
+      br.querySelectorAll('.plank')[done-1].classList.add('on');
+      say(phraseOf(w,t.set));
+      if(done===words.length){ showFb(pick(GOOD),true); solved(3200,F); } else showFb('Passt!',true);
+    } else {
+      state.wrong++; shake(c); shake(tl); clearSel(); showFb(hintFor('match'),false);
+    }
+  }
+  cols.appendChild(colL); cols.appendChild(colR); C.appendChild(cols);
+  F.appendChild(mkFb());
+  st.appendChild(H); st.appendChild(C); st.appendChild(F);
+};
+
+/* ---- Navigation, Ende, Start ---- */
+function backToMenu(){ clearTimers(); stopSay(); cancelAnimationFrame(MAP.raf); state.task=null; showScreen('start'); const f=document.querySelector('.mode-card'); if(f) f.focus({preventScroll:true}); }
+function init(){
+  buildBanner(); buildStart(); updateSoundButtons();
+  $('btn-sound').addEventListener('click',toggleSound); $('btn-sound2').addEventListener('click',toggleSound);
+  $('btn-back').addEventListener('click',backToMenu);
+  $('sub-back').addEventListener('click',backToMenu);
+  $('btn-menu').addEventListener('click',backToMenu);
+  $('btn-again').addEventListener('click',()=>{ showScreen('game'); buildMap(); progressTo(0); startRound(); });
+  let rt=null; window.addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(!$('screen-game').hidden) { buildMap(); } },120); });
+  document.addEventListener('visibilitychange',()=>{ if(document.hidden) stopSay(); });
+  window.addEventListener('pagehide',stopSay);
+  if(location.hash==='#qa'){ window.__aaDebug = { state, task:()=>state.task, plan:()=>state.plan, MAP, WORDS, makeRound, say }; }
+}
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+
+</script>
+</body>
+</html>
